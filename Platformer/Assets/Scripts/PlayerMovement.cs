@@ -15,13 +15,15 @@ public class PlayerMovement : MonoBehaviour
 
     [Space]
     [Header("Horizontal Movement Values")]
-    [SerializeField] float _runningSpeed = 5f;
-    [SerializeField] float _deceleration = 5f;
+    [SerializeField] float _baseDeceleration = 0.75f;
+    [SerializeField] float _baseAcceleration = 1.5f;
+    [SerializeField] float _thresholdVelocity = 4.0f;
+    [SerializeField] float _thresholdDeceleration = 2.0f;
 
     [Space]
     [Header("Ground Check")]
     [SerializeField] Transform _groundCheckPoint;
-    [SerializeField] float _coyoteTime       = 0.1f;
+    [SerializeField] float _coyoteTime = 0.1f;
     [SerializeField] LayerMask _groundMask;
 
     [Space]
@@ -38,22 +40,24 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] ParticleSystem _walljumpParticles  = null;
     [SerializeField] ParticleSystem _wallHangParticles  = null;
 
-    ParticleSystem _leftWalljumpParticles = null;
+    ParticleSystem _leftWalljumpParticles  = null;
     ParticleSystem _rightWalljumpParticles = null;
+
+    Vector2 _velocityChange;
 
     // Player state
     int _facingDirection = 1;
 
-    bool _grounded       = false;
-    bool _jumping        = false;
-    bool _falling        = false;
-    int   _jumpsLeft = 0;
+    bool _grounded = false;
+    bool _jumping  = false;
+    bool _falling  = false;
+    int _jumpsLeft = 0;
     float _timeLastGrounded = -1.0f;
 
     // Wallhanging values
     Vector2 _touchedWallPosition = new Vector2(0f, 0f);
-    bool _touchingWall   = false;
-    bool _wallHanging    = false;
+    bool _touchingWall = false;
+    bool _wallHanging = false;
     bool _wallHangStoppedFall = false;
     int _wallDirection = 0; 
     float _lastWalljumpX = 0.0f; 
@@ -64,10 +68,10 @@ public class PlayerMovement : MonoBehaviour
     // Cashed components
     PlayerInputs _inputs;
 
-    Rigidbody2D      _rb;
+    Rigidbody2D _rb;
 
     SpriteRenderer _sprite;
-    Animator       _anim;
+    Animator _anim;
 
     // Hashed animator params
     int _hashHorizontalVelocity;
@@ -131,20 +135,29 @@ public class PlayerMovement : MonoBehaviour
         ProcessHorizontalInput();
         ProcessJumpInput();
 
+        // Apply velocity changes
+        _rb.velocity += _velocityChange;
+        _velocityChange = new Vector2(0.0f, 0.0f);
+
         DisplayDebugInfo();
     }
 
     void ProcessHorizontalInput()
     {
-        Vector2 oldVelocity = _rb.velocity;
+        float horizontalVelocity = _rb.velocity.x;
+        float velocityDirection = Mathf.Sign(horizontalVelocity);
 
-        if (Mathf.Abs(_inputs.HorizontalInput) > 0.0)
+        // Deceleration, can't exceed current velocity to prevent character from becoming a pendulum
+        _velocityChange.x += Mathf.Clamp(_baseDeceleration * -velocityDirection, -Mathf.Abs(horizontalVelocity), Mathf.Abs(horizontalVelocity));
+        // Acceleration
+        _velocityChange.x += _baseAcceleration * _inputs.HorizontalInput;
+
+        if (Mathf.Abs(horizontalVelocity + _velocityChange.x) > _thresholdVelocity)
         {
-            _rb.velocity = new Vector2(_inputs.HorizontalInput * _runningSpeed, oldVelocity.y);
-        }
-        else
-        {
-            _rb.velocity = new Vector2(0.0f, oldVelocity.y);
+            float excessiveVelocity = Mathf.Abs(horizontalVelocity + _velocityChange.x) - _thresholdVelocity;
+            float excessiveVelocityDirection = Mathf.Sign(horizontalVelocity + _velocityChange.x);
+            // Don't change speed below threshold for more consistent movement
+            _velocityChange.x += Mathf.Clamp(_thresholdDeceleration * -excessiveVelocityDirection, -excessiveVelocity, excessiveVelocity);
         }
     }
 
@@ -174,7 +187,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (jumpInput && jumpPossible)
         {
-            // Regular from ground jump here
+            // Regular jump from ground here
             if (groundjumpPossible)
             {
                 EmitJumpingParticles();

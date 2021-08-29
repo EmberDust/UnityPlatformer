@@ -45473,5 +45473,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+      propertyPath: _baseAcceleration
+      value: 1.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+      propertyPath: _baseDeceleration
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+      propertyPath: _thresholdVelocity
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+      propertyPath: _thresholdDeceleration
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
