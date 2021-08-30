@@ -24348,18 +24348,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _additionalJumps: 1
   _jumpSpeed: 5
+  _walljumpAccelerationDuration: 0.25
+  _walljumpAcceleration: 2
+  _walljumpInputOverrideDuration: 0.5
+  _walljumpWindow: 0.1
   _baseGravityScale: 3
   _ascendingGravityScale: 1
   _fallingGravityScale: 3
-  _runningSpeed: 3.5
-  _deceleration: 5
+  _airDeceleration: 0.25
+  _airAcceleration: 1
+  _baseDeceleration: 1
+  _baseAcceleration: 1.5
+  _thresholdVelocity: 4
+  _thresholdDeceleration: 0.5
   _groundCheckPoint: {fileID: 2014453868632953729}
   _coyoteTime: 0.1
   _groundMask:
     serializedVersion: 2
     m_Bits: 64
   _wallCheckPoint: {fileID: 6058625182864201881}
-  _walljumpWindow: 0.1
   _wallHangingGravityScale: 0.1
   _runningParticles: {fileID: 600919129}
   _jumpingParticles: {fileID: 751759892}

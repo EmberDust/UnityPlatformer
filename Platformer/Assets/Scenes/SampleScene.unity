@@ -45425,6 +45425,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2014453868632953729, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.54
+      objectReference: {fileID: 0}
     - target: {fileID: 7945967496813168226, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
       propertyPath: m_Name
       value: Player
@@ -45474,20 +45478,44 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
-      propertyPath: _baseAcceleration
-      value: 1.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
-      propertyPath: _baseDeceleration
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
-      propertyPath: _thresholdVelocity
+      propertyPath: _jumpSpeed
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+      propertyPath: _airAcceleration
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+      propertyPath: _airDeceleration
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+      propertyPath: _baseGravityScale
+      value: 2.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+      propertyPath: _thresholdVelocity
+      value: 3.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+      propertyPath: _fallingGravityScale
+      value: 2.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+      propertyPath: _walljumpAcceleration
+      value: 2.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+      propertyPath: _ascendingGravityScale
+      value: 0.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
       propertyPath: _thresholdDeceleration
-      value: 2
+      value: 0.505
+      objectReference: {fileID: 0}
+    - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+      propertyPath: _walljumpAccelerationDuration
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}

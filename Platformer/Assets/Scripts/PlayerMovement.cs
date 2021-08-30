@@ -4,21 +4,28 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("JumpValues")]
+    [SerializeField]float timeScale = 1.0f;
+
+    [Header("Jump")]
     [SerializeField] int   _additionalJumps = 1;
     [SerializeField] float _jumpSpeed       = 5f;
+
+    [Header("Walljump")]
+    [SerializeField] int _walljumpAccelerationFrames = 5;
+    [SerializeField] float _walljumpAcceleration = 2.0f;
+    [SerializeField] float _walljumpWindow = 0.2f;
 
     [Space]
     [SerializeField] float _baseGravityScale      = 2f;
     [SerializeField] float _ascendingGravityScale = 1f;
-    [SerializeField] float _fallingGravityScale   = 5f;
+    [SerializeField] float _fallingGravityScale   = 3f;
 
     [Space]
     [Header("Horizontal Movement Values")]
     [SerializeField] float _baseDeceleration = 0.75f;
     [SerializeField] float _baseAcceleration = 1.5f;
     [SerializeField] float _thresholdVelocity = 4.0f;
-    [SerializeField] float _thresholdDeceleration = 2.0f;
+    [SerializeField] float _thresholdDeceleration = 0.75f;
 
     [Space]
     [Header("Ground Check")]
@@ -29,7 +36,6 @@ public class PlayerMovement : MonoBehaviour
     [Space]
     [Header("Wall Hanging")]
     [SerializeField] Transform _wallCheckPoint;
-    [SerializeField] float _walljumpWindow = 0.2f;
     [SerializeField] float _wallHangingGravityScale = 0.2f;
 
     [Space]
@@ -52,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
     bool _jumping  = false;
     bool _falling  = false;
     int _jumpsLeft = 0;
-    float _timeLastGrounded = -1.0f;
+    float _timeLastGrounded = -10.0f;
 
     // Wallhanging values
     Vector2 _touchedWallPosition = new Vector2(0f, 0f);
@@ -60,17 +66,16 @@ public class PlayerMovement : MonoBehaviour
     bool _wallHanging = false;
     bool _wallHangStoppedFall = false;
     int _wallDirection = 0; 
-    float _lastWalljumpX = 0.0f; 
-    float _timeLastWallHanging = -1.0f;
+    float _timeLastWallHanging = -10.0f;
 
-    System.Text.StringBuilder _debugString = new System.Text.StringBuilder();
+    float _lastWalljumpX = float.PositiveInfinity;
+    int _walljumpFrame = 0;
 
     // Cashed components
     PlayerInputs _inputs;
 
     Rigidbody2D _rb;
 
-    SpriteRenderer _sprite;
     Animator _anim;
 
     // Hashed animator params
@@ -78,10 +83,11 @@ public class PlayerMovement : MonoBehaviour
     int _hashIsFalling;
     int _hashIsJumping;
 
+    System.Text.StringBuilder _debugString = new System.Text.StringBuilder();
+
     void Start()
     {
         _rb     = GetComponent<Rigidbody2D>();
-        _sprite = GetComponentInChildren<SpriteRenderer>();
         _inputs = GetComponent<PlayerInputs>();
 
         _anim = GetComponent<Animator>();
@@ -89,6 +95,8 @@ public class PlayerMovement : MonoBehaviour
         _hashHorizontalVelocity = Animator.StringToHash("horizontalVelocity");
         _hashIsFalling          = Animator.StringToHash("isFalling");
         _hashIsJumping          = Animator.StringToHash("isJumping");
+
+        _walljumpFrame = _walljumpAccelerationFrames;
 
         if (_walljumpParticles != null)
         {
@@ -112,6 +120,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        Time.timeScale = timeScale;
         // Update player visual state
         FaceMovementDirection();
         PlayRunningParticles();
@@ -132,26 +141,53 @@ public class PlayerMovement : MonoBehaviour
         WallHangingCheck();
 
         // Physics, depending on state and inputs
-        ProcessHorizontalInput();
-        ProcessJumpInput();
+        HandleHorizontalAcceleration();
+        HandleJumpInput();
 
         // Apply velocity changes
         _rb.velocity += _velocityChange;
+
+        _debugString.AppendLine($"Velocity change: {_velocityChange.x}");
+        _debugString.AppendLine($"Total velocity: {_rb.velocity.x}");
+
         _velocityChange = new Vector2(0.0f, 0.0f);
 
         DisplayDebugInfo();
     }
 
-    void ProcessHorizontalInput()
+    void HandleHorizontalAcceleration()
     {
         float horizontalVelocity = _rb.velocity.x;
         float velocityDirection = Mathf.Sign(horizontalVelocity);
 
         // Deceleration, can't exceed current velocity to prevent character from becoming a pendulum
         _velocityChange.x += Mathf.Clamp(_baseDeceleration * -velocityDirection, -Mathf.Abs(horizontalVelocity), Mathf.Abs(horizontalVelocity));
-        // Acceleration
-        _velocityChange.x += _baseAcceleration * _inputs.HorizontalInput;
 
+        // Horizontal input acceleration
+        float acceleration = _baseAcceleration;
+        float accelerationDirection = 0.0f;
+
+        // Walljump overrides acceleration for duration
+        bool isDuringWallJump = _walljumpFrame < _walljumpAccelerationFrames;
+
+        if (!isDuringWallJump)
+        {
+            if (!_wallHanging)
+            {
+                _walljumpFrame = _walljumpAccelerationFrames;
+                accelerationDirection = _inputs.HorizontalInput;
+            }
+        }
+        else
+        {
+            _walljumpFrame++;
+            acceleration = _walljumpAcceleration;
+            accelerationDirection = -_wallDirection;
+        }
+
+        _velocityChange.x += acceleration * accelerationDirection;
+
+        // Soft limit player horizontal velocity
         if (Mathf.Abs(horizontalVelocity + _velocityChange.x) > _thresholdVelocity)
         {
             float excessiveVelocity = Mathf.Abs(horizontalVelocity + _velocityChange.x) - _thresholdVelocity;
@@ -161,21 +197,21 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void ProcessJumpInput()
+    void HandleJumpInput()
     {
-        Vector2 oldVelocity = _rb.velocity;
+        float newVerticalVelocity = _rb.velocity.y;
 
         // Brake the fall speed on wallhang
         if (_wallHanging && _falling && !_wallHangStoppedFall)
         {
-            _rb.velocity = new Vector2(oldVelocity.x, 0.0f);
+            newVerticalVelocity = 0.0f;
             _wallHangStoppedFall = true;
         }
 
         // Wall jumps are possible only from "new" walls
-        bool isNewWalljumpX = Mathf.Abs(_lastWalljumpX - _touchedWallPosition.x) > 0.05f;
+        bool isDifferentWall = Mathf.Abs(_lastWalljumpX - _touchedWallPosition.x) > 0.05f;
         bool inWalljumpWindow = _timeLastWallHanging + _walljumpWindow > Time.time;
-        bool walljumpPossible = inWalljumpWindow && isNewWalljumpX;
+        bool walljumpPossible = inWalljumpWindow && isDifferentWall;
 
         bool groundjumpPossible = _timeLastGrounded + _coyoteTime > Time.time;
 
@@ -198,6 +234,8 @@ public class PlayerMovement : MonoBehaviour
                 if (walljumpPossible && _inputs.WallGrabPressed)
                 {
                     _lastWalljumpX = _touchedWallPosition.x;
+                    _walljumpFrame = 0;
+
                     EmitWalljumpParticles(_wallDirection, _touchedWallPosition);
                 }
                 // Multi jump here
@@ -208,10 +246,12 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
 
-            _rb.velocity = new Vector2(oldVelocity.x, _jumpSpeed);
+            newVerticalVelocity = _jumpSpeed;
 
             _timeLastGrounded = -1.0f;
         }
+
+        _rb.velocity = new Vector2(_rb.velocity.x, newVerticalVelocity);
 
         // -Can we have a state machine? -We have a state machine at home
         // State machine at home:
@@ -243,7 +283,7 @@ public class PlayerMovement : MonoBehaviour
         {
             // Refresh jump values
             _jumpsLeft = _additionalJumps;
-            _lastWalljumpX = 0;
+            _lastWalljumpX = float.PositiveInfinity;
 
             _timeLastGrounded = Time.time;
         }
@@ -301,16 +341,19 @@ public class PlayerMovement : MonoBehaviour
 
     void FaceMovementDirection()
     {
-        if (_inputs.HorizontalInput < 0.0f && _facingDirection == 1)
+        if (!_wallHanging)
         {
-            _facingDirection = -1;
-            transform.eulerAngles = new Vector3(0f, 180f, 0f);
-        }
+            if (_inputs.HorizontalInput < 0.0f && _facingDirection == 1)
+            {
+                _facingDirection = -1;
+                transform.eulerAngles = new Vector3(0f, 180f, 0f);
+            }
 
-        if (_inputs.HorizontalInput > 0.0f && _facingDirection == -1)
-        {
-            _facingDirection = 1;
-            transform.eulerAngles = new Vector3(0f, 0f, 0f);
+            if (_inputs.HorizontalInput > 0.0f && _facingDirection == -1)
+            {
+                _facingDirection = 1;
+                transform.eulerAngles = new Vector3(0f, 0f, 0f);
+            }
         }
     }
 
