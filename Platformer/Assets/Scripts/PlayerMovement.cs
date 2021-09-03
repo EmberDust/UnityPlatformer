@@ -50,10 +50,13 @@ public class PlayerMovement : MonoBehaviour
     public bool WallHanging { get; private set; }
 
     // Player state
+    Vector2 _velocityChange;
+
     int _facingDirection = 1;
     int _jumpsLeft = 0;
-    Vector2 _velocityChange;
+
     float _timeLastGrounded = -10.0f;
+    int _walljumpFrame = 0;
 
     // Wallhanging values
     Vector2 _touchedWallPosition = new Vector2(0f, 0f);
@@ -61,8 +64,6 @@ public class PlayerMovement : MonoBehaviour
     int _wallDirection = 0; 
 
     bool _wallHangStoppedFall = false;
-
-    int _walljumpFrame = 0;
 
     // Cashed components
     PlayerInputs _inputs;

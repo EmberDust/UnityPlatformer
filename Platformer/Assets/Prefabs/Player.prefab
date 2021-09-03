@@ -24414,8 +24414,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d2f9fa744b54624ea5425ef0599381f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _runningVelocity: 3
-  _baseAnimSpeed: 0.75
+  _runningVelocity: 2
+  _baseAnimationSpeed: 0.75
   _runningParticles: {fileID: 600919129}
   _jumpingParticles: {fileID: 751759892}
   _multijumpParticles: {fileID: 6556809107142993357}
