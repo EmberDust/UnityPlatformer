@@ -24347,7 +24347,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dfa21f06c59cf747b33028247e8d193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeScale: 1
+  _timeScale: 1
   _additionalJumps: 1
   _jumpSpeed: 4
   _walljumpAccelerationFrames: 7
@@ -24356,6 +24356,7 @@ MonoBehaviour:
   _baseGravityScale: 2.75
   _ascendingGravityScale: 0.66
   _fallingGravityScale: 2.75
+  _wallHangingGravityScale: 0.1
   _baseDeceleration: 1
   _baseAcceleration: 1.5
   _thresholdVelocity: 3.25
@@ -24366,7 +24367,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _wallCheckPoint: {fileID: 6058625182864201881}
-  _wallHangingGravityScale: 0.1
   _wallMask:
     serializedVersion: 2
     m_Bits: 64
@@ -24414,6 +24414,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d2f9fa744b54624ea5425ef0599381f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _runningVelocity: 3
+  _baseAnimSpeed: 0.75
   _runningParticles: {fileID: 600919129}
   _jumpingParticles: {fileID: 751759892}
   _multijumpParticles: {fileID: 6556809107142993357}

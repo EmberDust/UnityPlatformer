@@ -54075,6 +54075,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 728836082, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+      propertyPath: _runningVelocity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 728836082, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+      propertyPath: _baseAnimationSpeed
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 7945967496813168226, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
       propertyPath: m_Name
       value: Player
@@ -54122,10 +54130,6 @@ PrefabInstance:
     - target: {fileID: 7945967496813168227, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7945967496813168231, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
-      propertyPath: _wallMask.m_Bits
-      value: 64
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}

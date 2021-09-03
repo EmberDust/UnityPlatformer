@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class PlayerVisuals : MonoBehaviour
 {
+    [Header("Running Animation Speed")]
+    [SerializeField] float _runningVelocity = 3f;
+    [SerializeField] float _baseAnimationSpeed = 1.0f;
+
     [Space]
     [Header("Particle Systems")]
     [SerializeField] ParticleSystem _runningParticles   = null;
@@ -47,6 +51,16 @@ public class PlayerVisuals : MonoBehaviour
 
     void Update()
     {
+        // Increases animation speed based on player velocity
+        if (Mathf.Abs(_rb.velocity.x) > _runningVelocity) 
+        {
+            _anim.speed = Mathf.Abs(_rb.velocity.x) / _runningVelocity * _baseAnimationSpeed;
+        }
+        else if (_anim.speed != _baseAnimationSpeed)
+        {
+            _anim.speed = _baseAnimationSpeed;
+        }
+
         PlayRunningParticles();
         PlayWallHangParticles();
         UpdateAnimator();
