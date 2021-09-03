@@ -19326,7 +19326,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 370496263262403542}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.03, y: -0.511, z: 0}
+  m_LocalPosition: {x: -0.03, y: -0.54, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_Children: []
   m_Father: {fileID: 7945967496813168227}
@@ -24346,21 +24346,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dfa21f06c59cf747b33028247e8d193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  timeScale: 1
   _additionalJumps: 1
-  _jumpSpeed: 5
-  _walljumpAccelerationDuration: 0.25
-  _walljumpAcceleration: 2
-  _walljumpInputOverrideDuration: 0.5
+  _jumpSpeed: 4
+  _walljumpAccelerationFrames: 5
+  _walljumpAcceleration: 2.3
   _walljumpWindow: 0.1
-  _baseGravityScale: 3
-  _ascendingGravityScale: 1
-  _fallingGravityScale: 3
-  _airDeceleration: 0.25
-  _airAcceleration: 1
+  _baseGravityScale: 2.75
+  _ascendingGravityScale: 0.65
+  _fallingGravityScale: 2.75
   _baseDeceleration: 1
   _baseAcceleration: 1.5
-  _thresholdVelocity: 4
-  _thresholdDeceleration: 0.5
+  _thresholdVelocity: 3.75
+  _thresholdDeceleration: 0.505
   _groundCheckPoint: {fileID: 2014453868632953729}
   _coyoteTime: 0.1
   _groundMask:
