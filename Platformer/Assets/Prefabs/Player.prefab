@@ -24350,8 +24350,8 @@ MonoBehaviour:
   timeScale: 1
   _additionalJumps: 1
   _jumpSpeed: 4
-  _walljumpAccelerationFrames: 5
-  _walljumpAcceleration: 2.3
+  _walljumpAccelerationFrames: 7
+  _walljumpAcceleration: 2
   _walljumpWindow: 0.1
   _baseGravityScale: 2.75
   _ascendingGravityScale: 0.66
@@ -24367,6 +24367,9 @@ MonoBehaviour:
     m_Bits: 64
   _wallCheckPoint: {fileID: 6058625182864201881}
   _wallHangingGravityScale: 0.1
+  _wallMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &1227212753
 MonoBehaviour:
   m_ObjectHideFlags: 0

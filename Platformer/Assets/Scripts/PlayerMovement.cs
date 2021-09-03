@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField]float timeScale = 1.0f;
+    [SerializeField]float _timeScale = 1.0f;
 
     [Header("Jump")]
     [SerializeField] int   _additionalJumps = 1;
@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float _baseGravityScale      = 2f;
     [SerializeField] float _ascendingGravityScale = 1f;
     [SerializeField] float _fallingGravityScale   = 3f;
+    [SerializeField] float _wallHangingGravityScale = 0.2f;
 
     [Space]
     [Header("Horizontal Movement Values")]
@@ -35,9 +36,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] LayerMask _groundMask;
 
     [Space]
-    [Header("Wall Hanging")]
+    [Header("Wall Check")]
     [SerializeField] Transform _wallCheckPoint;
-    [SerializeField] float _wallHangingGravityScale = 0.2f;
+    [SerializeField] LayerMask _wallMask;
 
     public event Action<int, Vector2> playerWalljumped;
     public event Action playerGroundjumped;
@@ -61,7 +62,6 @@ public class PlayerMovement : MonoBehaviour
 
     bool _wallHangStoppedFall = false;
 
-    float _xOfLastWalljump = float.PositiveInfinity;
     int _walljumpFrame = 0;
 
     // Cashed components
@@ -79,14 +79,13 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        Time.timeScale = timeScale;
-
-        // Update player visual state
         FaceMovementDirection();
     }
 
     void FixedUpdate()
     {
+        Time.timeScale = _timeScale;
+
         _debugString.Clear();
 
         _rb.gravityScale = _baseGravityScale;
@@ -120,18 +119,17 @@ public class PlayerMovement : MonoBehaviour
         // Deceleration, can't exceed current velocity to prevent character from becoming a pendulum
         _velocityChange.x += Mathf.Clamp(_baseDeceleration * -velocityDirection, -Mathf.Abs(horizontalVelocity), Mathf.Abs(horizontalVelocity));
 
-        // Horizontal input acceleration
+        // Horizontal acceleration
         float acceleration = _baseAcceleration;
         float accelerationDirection = 0.0f;
 
-        // Walljump overrides acceleration for duration
+        // Walljump overrides input acceleration for duration
         bool isDuringWallJump = _walljumpFrame < _walljumpAccelerationFrames;
 
         if (!isDuringWallJump)
         {
             if (!WallHanging)
             {
-                _walljumpFrame = _walljumpAccelerationFrames;
                 accelerationDirection = _inputs.HorizontalInput;
             }
         }
@@ -165,12 +163,9 @@ public class PlayerMovement : MonoBehaviour
             _wallHangStoppedFall = true;
         }
 
-        // Wall jumps are possible only from "new" walls
-        bool isDifferentWall = Mathf.Abs(_xOfLastWalljump - _touchedWallPosition.x) > 0.05f;
-        bool walljumpPossible = WallHanging && isDifferentWall;
-
+        // Rules for different kinds of jump
         bool groundjumpPossible = _timeLastGrounded + _coyoteTime > Time.time;
-
+        bool walljumpPossible = WallHanging;
         bool multijumpPossible = _jumpsLeft > 0;
 
         bool jumpPossible = groundjumpPossible || walljumpPossible || multijumpPossible;
@@ -189,7 +184,6 @@ public class PlayerMovement : MonoBehaviour
                 // Wall jump here
                 if (walljumpPossible && _inputs.WallGrabPressed)
                 {
-                    _xOfLastWalljump = _touchedWallPosition.x;
                     _walljumpFrame = 0;
 
                     playerWalljumped?.Invoke(_wallDirection, _touchedWallPosition);
@@ -216,9 +210,10 @@ public class PlayerMovement : MonoBehaviour
         // -Can we have a state machine? -We have a state machine at home
         // State machine at home:
 
-        // Update gravity scale to allow player to control his jump height
+        // Changing gravity scale for better game feel
         if (Jumping)
         {
+            // If player holds jump button - increase jump height
             if (_inputs.JumpPressed)
                 _rb.gravityScale = _ascendingGravityScale;
         }
@@ -243,7 +238,6 @@ public class PlayerMovement : MonoBehaviour
         {
             // Refresh jump values
             _jumpsLeft = _additionalJumps;
-            _xOfLastWalljump = float.PositiveInfinity;
 
             _timeLastGrounded = Time.time;
         }
@@ -253,17 +247,17 @@ public class PlayerMovement : MonoBehaviour
 
     void WallCheck()
     {
-        var wallTouched = Physics2D.Raycast(transform.position,
+        var touchedWall = Physics2D.Raycast(transform.position,
                 _wallCheckPoint.position - transform.position,
                 Vector2.Distance(transform.position, _wallCheckPoint.position),
-                _groundMask);
+                _wallMask);
 
-        _isTouchingWall = wallTouched;
+        _isTouchingWall = touchedWall;
 
-        if (wallTouched)
+        if (touchedWall)
         {
             _wallDirection = _facingDirection;
-            _touchedWallPosition = wallTouched.point;
+            _touchedWallPosition = touchedWall.point;
         }
     }
 
