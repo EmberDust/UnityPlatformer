@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,7 +16,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float _walljumpAcceleration = 2.0f;
     [SerializeField] float _walljumpWindow = 0.2f;
 
-    [Space]
+    [Header("Gravity Scales")]
     [SerializeField] float _baseGravityScale      = 2f;
     [SerializeField] float _ascendingGravityScale = 1f;
     [SerializeField] float _fallingGravityScale   = 3f;
@@ -38,94 +39,50 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Transform _wallCheckPoint;
     [SerializeField] float _wallHangingGravityScale = 0.2f;
 
-    [Space]
-    [Header("Particle Systems")]
-    [SerializeField] ParticleSystem _runningParticles   = null;
-    [SerializeField] ParticleSystem _jumpingParticles   = null;
-    [SerializeField] ParticleSystem _multijumpParticles = null;
-    [SerializeField] ParticleSystem _walljumpParticles  = null;
-    [SerializeField] ParticleSystem _wallHangParticles  = null;
+    public event Action<int, Vector2> playerWalljumped;
+    public event Action playerGroundjumped;
+    public event Action playerMultijumped;
 
-    ParticleSystem _leftWalljumpParticles  = null;
-    ParticleSystem _rightWalljumpParticles = null;
-
-    Vector2 _velocityChange;
+    public bool Grounded    { get; private set; }
+    public bool Jumping     { get; private set; }
+    public bool Falling     { get; private set; }
+    public bool WallHanging { get; private set; }
 
     // Player state
     int _facingDirection = 1;
-
-    bool _grounded = false;
-    bool _jumping  = false;
-    bool _falling  = false;
     int _jumpsLeft = 0;
+    Vector2 _velocityChange;
     float _timeLastGrounded = -10.0f;
 
     // Wallhanging values
     Vector2 _touchedWallPosition = new Vector2(0f, 0f);
-    bool _touchingWall = false;
-    bool _wallHanging = false;
-    bool _wallHangStoppedFall = false;
+    bool _isTouchingWall = false;
     int _wallDirection = 0; 
-    float _timeLastWallHanging = -10.0f;
 
-    float _lastWalljumpX = float.PositiveInfinity;
+    bool _wallHangStoppedFall = false;
+
+    float _xOfLastWalljump = float.PositiveInfinity;
     int _walljumpFrame = 0;
 
     // Cashed components
     PlayerInputs _inputs;
-
     Rigidbody2D _rb;
 
-    Animator _anim;
-
-    // Hashed animator params
-    int _hashHorizontalVelocity;
-    int _hashIsFalling;
-    int _hashIsJumping;
-
+    // DEBUG VALUES
     System.Text.StringBuilder _debugString = new System.Text.StringBuilder();
 
     void Start()
     {
         _rb     = GetComponent<Rigidbody2D>();
         _inputs = GetComponent<PlayerInputs>();
-
-        _anim = GetComponent<Animator>();
-
-        _hashHorizontalVelocity = Animator.StringToHash("horizontalVelocity");
-        _hashIsFalling          = Animator.StringToHash("isFalling");
-        _hashIsJumping          = Animator.StringToHash("isJumping");
-
-        _walljumpFrame = _walljumpAccelerationFrames;
-
-        if (_walljumpParticles != null)
-        {
-            _leftWalljumpParticles = _walljumpParticles;
-
-            if (_leftWalljumpParticles.velocityOverLifetime.x.mode == ParticleSystemCurveMode.TwoConstants) {
-                // Create a mirrored walljump particle system if it uses expected mode
-                _rightWalljumpParticles = Instantiate<ParticleSystem>(_walljumpParticles, _walljumpParticles.transform.parent);
-                _rightWalljumpParticles.name = "Right " + _walljumpParticles.name;
-
-                var newVelocityCurve = _rightWalljumpParticles.velocityOverLifetime;
-                newVelocityCurve.x = new ParticleSystem.MinMaxCurve(-newVelocityCurve.x.constantMin, -newVelocityCurve.x.constantMax);
-            }
-            else
-            {
-                // If curve mode is of unexpected type - don't touch anything to avoid errors
-                _rightWalljumpParticles = _walljumpParticles;
-            }
-        }
     }
 
     void Update()
     {
         Time.timeScale = timeScale;
+
         // Update player visual state
         FaceMovementDirection();
-        PlayRunningParticles();
-        PlayWallHangParticles();
-        UpdateAnimator();
     }
 
     void FixedUpdate()
@@ -133,6 +90,7 @@ public class PlayerMovement : MonoBehaviour
         _debugString.Clear();
 
         _rb.gravityScale = _baseGravityScale;
+        _velocityChange = new Vector2(0.0f, 0.0f);
 
         // State changes, without directly affecting physics or logic
         GroundCheck();
@@ -142,16 +100,15 @@ public class PlayerMovement : MonoBehaviour
 
         // Physics, depending on state and inputs
         HandleHorizontalAcceleration();
-        HandleJumpInput();
+        HandleVerticalMovement();
+        UpdateGravityScales();
 
         // Apply velocity changes
         _rb.velocity += _velocityChange;
 
+        // DEBUG
         _debugString.AppendLine($"Velocity change: {_velocityChange.x}");
         _debugString.AppendLine($"Total velocity: {_rb.velocity.x}");
-
-        _velocityChange = new Vector2(0.0f, 0.0f);
-
         DisplayDebugInfo();
     }
 
@@ -172,7 +129,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (!isDuringWallJump)
         {
-            if (!_wallHanging)
+            if (!WallHanging)
             {
                 _walljumpFrame = _walljumpAccelerationFrames;
                 accelerationDirection = _inputs.HorizontalInput;
@@ -197,21 +154,20 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void HandleJumpInput()
+    void HandleVerticalMovement()
     {
         float newVerticalVelocity = _rb.velocity.y;
 
         // Brake the fall speed on wallhang
-        if (_wallHanging && _falling && !_wallHangStoppedFall)
+        if (WallHanging && Falling && !_wallHangStoppedFall)
         {
             newVerticalVelocity = 0.0f;
             _wallHangStoppedFall = true;
         }
 
         // Wall jumps are possible only from "new" walls
-        bool isDifferentWall = Mathf.Abs(_lastWalljumpX - _touchedWallPosition.x) > 0.05f;
-        bool inWalljumpWindow = _timeLastWallHanging + _walljumpWindow > Time.time;
-        bool walljumpPossible = inWalljumpWindow && isDifferentWall;
+        bool isDifferentWall = Mathf.Abs(_xOfLastWalljump - _touchedWallPosition.x) > 0.05f;
+        bool walljumpPossible = WallHanging && isDifferentWall;
 
         bool groundjumpPossible = _timeLastGrounded + _coyoteTime > Time.time;
 
@@ -226,23 +182,24 @@ public class PlayerMovement : MonoBehaviour
             // Regular jump from ground here
             if (groundjumpPossible)
             {
-                EmitJumpingParticles();
+                playerGroundjumped?.Invoke();
             }
             else
             {
                 // Wall jump here
                 if (walljumpPossible && _inputs.WallGrabPressed)
                 {
-                    _lastWalljumpX = _touchedWallPosition.x;
+                    _xOfLastWalljump = _touchedWallPosition.x;
                     _walljumpFrame = 0;
 
-                    EmitWalljumpParticles(_wallDirection, _touchedWallPosition);
+                    playerWalljumped?.Invoke(_wallDirection, _touchedWallPosition);
                 }
                 // Multi jump here
                 else
                 {
                     _jumpsLeft--;
-                    EmitMultijumpParticles();
+
+                    playerMultijumped?.Invoke();
                 }
             }
 
@@ -252,23 +209,26 @@ public class PlayerMovement : MonoBehaviour
         }
 
         _rb.velocity = new Vector2(_rb.velocity.x, newVerticalVelocity);
+    }
 
+    void UpdateGravityScales()
+    {
         // -Can we have a state machine? -We have a state machine at home
         // State machine at home:
 
         // Update gravity scale to allow player to control his jump height
-        if (_jumping)
+        if (Jumping)
         {
             if (_inputs.JumpPressed)
                 _rb.gravityScale = _ascendingGravityScale;
         }
-        else if (_wallHanging)
+        else if (WallHanging)
         {
             _rb.gravityScale = _wallHangingGravityScale;
         }
-        else if (_falling)
+        else if (Falling)
         {
-           _rb.gravityScale = _fallingGravityScale;
+            _rb.gravityScale = _fallingGravityScale;
         }
     }
 
@@ -283,12 +243,12 @@ public class PlayerMovement : MonoBehaviour
         {
             // Refresh jump values
             _jumpsLeft = _additionalJumps;
-            _lastWalljumpX = float.PositiveInfinity;
+            _xOfLastWalljump = float.PositiveInfinity;
 
             _timeLastGrounded = Time.time;
         }
 
-        _grounded = currentlyGrounded;
+        Grounded = currentlyGrounded;
     }
 
     void WallCheck()
@@ -298,7 +258,7 @@ public class PlayerMovement : MonoBehaviour
                 Vector2.Distance(transform.position, _wallCheckPoint.position),
                 _groundMask);
 
-        _touchingWall = wallTouched;
+        _isTouchingWall = wallTouched;
 
         if (wallTouched)
         {
@@ -309,39 +269,38 @@ public class PlayerMovement : MonoBehaviour
 
     void WallHangingCheck()
     {
-        bool suitableForWallHanging = _touchingWall && !_grounded;
+        bool suitableForWallHanging = _isTouchingWall && !Grounded;
 
         if (suitableForWallHanging && _inputs.WallGrabPressed)
         {
-            _wallHanging = true;
-            _timeLastWallHanging = Time.time;
+            WallHanging = true;
         }
         else
         {
-            _wallHanging = false;
+            WallHanging = false;
             _wallHangStoppedFall = false;
         }
     }
 
     void UpdateFallingState()
     {
-        _jumping = false;
-        _falling = false;
+        Jumping = false;
+        Falling = false;
 
         if (_rb.velocity.y > 0.005f)
         {
-            _jumping = true;
+            Jumping = true;
         }
 
         if (_rb.velocity.y < -0.005f)
         {
-            _falling = true;
+            Falling = true;
         }
     }
 
     void FaceMovementDirection()
     {
-        if (!_wallHanging)
+        if (!WallHanging)
         {
             if (_inputs.HorizontalInput < 0.0f && _facingDirection == 1)
             {
@@ -357,103 +316,8 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // FIX, remove the logic
-    void PlayRunningParticles()
-    {
-        if (_runningParticles != null)
-        {
-            if (Mathf.Abs(_rb.velocity.x) > 0.1f && _grounded)
-            {
-                if (!_runningParticles.isEmitting)
-                {
-                    _runningParticles.Play();
-                }
-            }
-            else
-            {
-                _runningParticles.Stop();
-            }
-        }
-    }
-
-    // FIX, remove the logic
-    void PlayWallHangParticles()
-    {
-        if (_wallHangParticles != null)
-        {
-            if (_wallHanging && _falling)
-            {
-                if (!_wallHangParticles.isEmitting)
-                {
-                    _wallHangParticles.Play();
-                }
-            }
-            else
-            {
-                _wallHangParticles.Stop();
-            }
-        }
-    }
-
-    void EmitJumpingParticles()
-    {
-        if (_jumpingParticles != null)
-        {
-            _jumpingParticles.Play();
-        }
-    }
-
-    void EmitMultijumpParticles()
-    {
-        if (_multijumpParticles != null)
-        {
-            _multijumpParticles.Play();
-        }
-    }
-
-    /// <summary>
-    /// Emit wall jump particles at the contact position
-    /// </summary>
-    /// <param name="direction">1 - wall to the right, -1 - to the left</param>
-    /// <param name="contactPosition"></param>
-    void EmitWalljumpParticles(int direction, Vector2 contactPosition)
-    {
-        if (_walljumpParticles != null)
-        {
-            int particlesCount = 50;
-
-            // If particle system has bursts - take the first burst values
-            // Yes, this is a crutch
-            if (_walljumpParticles.emission.burstCount > 0)
-            {
-                particlesCount = (int)_walljumpParticles.emission.GetBurst(0).count.constantMax;
-            }
-
-            var emitParams = new ParticleSystem.EmitParams();
-            emitParams.position = contactPosition;
-
-            if (direction == 1)
-            {
-                _rightWalljumpParticles.Emit(emitParams, particlesCount);
-            }
-
-            if (direction == -1)
-            {
-                _walljumpParticles.Emit(emitParams, particlesCount);
-            }
-        }
-    }
-
-    void UpdateAnimator()
-    {
-        _anim.SetFloat(_hashHorizontalVelocity, Mathf.Abs(_rb.velocity.x));
-        _anim.SetBool(_hashIsFalling, _falling);
-        _anim.SetBool(_hashIsJumping, _jumping);
-    }
-
     void DisplayDebugInfo()
     {
-
         GlobalText.Instance.Show(_debugString.ToString());
     }
 }

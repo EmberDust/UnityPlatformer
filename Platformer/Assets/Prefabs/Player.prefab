@@ -24246,6 +24246,7 @@ GameObject:
   - component: {fileID: 7945967496813168231}
   - component: {fileID: 1227212753}
   - component: {fileID: 2204184795717809600}
+  - component: {fileID: 728836082}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -24287,7 +24288,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 4bb0a5a6d79360a43896d663c829a209, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -24353,11 +24354,11 @@ MonoBehaviour:
   _walljumpAcceleration: 2.3
   _walljumpWindow: 0.1
   _baseGravityScale: 2.75
-  _ascendingGravityScale: 0.65
+  _ascendingGravityScale: 0.66
   _fallingGravityScale: 2.75
   _baseDeceleration: 1
   _baseAcceleration: 1.5
-  _thresholdVelocity: 3.75
+  _thresholdVelocity: 3.25
   _thresholdDeceleration: 0.505
   _groundCheckPoint: {fileID: 2014453868632953729}
   _coyoteTime: 0.1
@@ -24366,11 +24367,6 @@ MonoBehaviour:
     m_Bits: 64
   _wallCheckPoint: {fileID: 6058625182864201881}
   _wallHangingGravityScale: 0.1
-  _runningParticles: {fileID: 600919129}
-  _jumpingParticles: {fileID: 751759892}
-  _multijumpParticles: {fileID: 6556809107142993357}
-  _walljumpParticles: {fileID: 595268745}
-  _wallHangParticles: {fileID: 1990032881}
 --- !u!114 &1227212753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24403,6 +24399,23 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &728836082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7945967496813168226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d2f9fa744b54624ea5425ef0599381f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _runningParticles: {fileID: 600919129}
+  _jumpingParticles: {fileID: 751759892}
+  _multijumpParticles: {fileID: 6556809107142993357}
+  _walljumpParticles: {fileID: 595268745}
+  _wallHangParticles: {fileID: 1990032881}
 --- !u!1 &7945967496979675913
 GameObject:
   m_ObjectHideFlags: 0
