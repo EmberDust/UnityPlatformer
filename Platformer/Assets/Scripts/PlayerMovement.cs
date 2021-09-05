@@ -7,9 +7,17 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField]float _timeScale = 1.0f;
 
+    [Space]
+    [Header("Horizontal Movement Values")]
+    [SerializeField] float _baseDeceleration = 0.75f;
+    [SerializeField] float _baseAcceleration = 1.5f;
+    [SerializeField] float _thresholdVelocity = 4.0f;
+    [SerializeField] float _thresholdDeceleration = 0.75f;
+
     [Header("Jump")]
-    [SerializeField] int   _additionalJumps = 1;
-    [SerializeField] float _jumpSpeed       = 5f;
+    [SerializeField] int   _additionalJumps =  1;
+    [SerializeField] float _jumpSpeed = 5f;
+    [SerializeField] float _fallingVelocityLimit = -7f;
 
     [Header("Walljump")]
     [SerializeField] int _walljumpAccelerationFrames = 5;
@@ -17,17 +25,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float _walljumpWindow = 0.2f;
 
     [Header("Gravity Scales")]
-    [SerializeField] float _baseGravityScale      = 2f;
-    [SerializeField] float _ascendingGravityScale = 1f;
-    [SerializeField] float _fallingGravityScale   = 3f;
+    [SerializeField] float _baseGravityScale        = 2f;
+    [SerializeField] float _ascendingGravityScale   = 1f;
+    [SerializeField] float _fallingGravityScale     = 3f;
     [SerializeField] float _wallHangingGravityScale = 0.2f;
-
-    [Space]
-    [Header("Horizontal Movement Values")]
-    [SerializeField] float _baseDeceleration = 0.75f;
-    [SerializeField] float _baseAcceleration = 1.5f;
-    [SerializeField] float _thresholdVelocity = 4.0f;
-    [SerializeField] float _thresholdDeceleration = 0.75f;
 
     [Space]
     [Header("Ground Check")]
@@ -106,8 +107,11 @@ public class PlayerMovement : MonoBehaviour
         // Apply velocity changes
         _rb.velocity += _velocityChange;
 
+        // Clamp velocity values (for now only falling velocity)
+        float clampedVerticalVelocity = Mathf.Max(_rb.velocity.y, _fallingVelocityLimit);
+        _rb.velocity = new Vector2(_rb.velocity.x, clampedVerticalVelocity);
+
         // DEBUG
-        _debugString.AppendLine($"Velocity change: {_velocityChange.x}");
         _debugString.AppendLine($"Total velocity: {_rb.velocity.x}");
         DisplayDebugInfo();
     }
