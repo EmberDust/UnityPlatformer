@@ -16,51 +16,48 @@ public class PlayerVisuals : MonoBehaviour
     [SerializeField] ParticleSystem _multijumpParticles = null;
     [SerializeField] ParticleSystem _walljumpParticles  = null;
     [SerializeField] ParticleSystem _wallHangParticles  = null;
+    [SerializeField] ParticleSystem _deathParticles     = null;
 
     ParticleSystem _leftWalljumpParticles  = null;
     ParticleSystem _rightWalljumpParticles = null;
 
     Rigidbody2D _rb;
-    PlayerMovement _playerMovement;
+    PlayerMovement _player;
 
+    SpriteRenderer _sprite;
     Animator _anim;
 
     // Hashed animator params
     int _hashHorizontalVelocity;
     int _hashIsFalling;
     int _hashIsJumping;
+    int _hashIsDead;
 
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+        _sprite = GetComponentInChildren<SpriteRenderer>();
 
         _anim = GetComponent<Animator>();
 
         _hashHorizontalVelocity = Animator.StringToHash("horizontalVelocity");
         _hashIsFalling = Animator.StringToHash("isFalling");
         _hashIsJumping = Animator.StringToHash("isJumping");
+        _hashIsDead = Animator.StringToHash("isDead");
 
         CreateMirroredWalljumpParticles();
 
-        _playerMovement = GetComponent<PlayerMovement>();
+        _player = GetComponent<PlayerMovement>();
 
-        _playerMovement.playerWalljumped += EmitWalljumpParticles;
-        _playerMovement.playerGroundjumped += EmitJumpingParticles;
-        _playerMovement.playerMultijumped += EmitMultijumpParticles;
+        _player.playerWalljumped += EmitWalljumpParticles;
+        _player.playerGroundjumped += EmitJumpingParticles;
+        _player.playerMultijumped += EmitMultijumpParticles;
+        _player.playerDied += EmitDeathParticles;
     }
 
     void Update()
     {
-        // Increases animation speed based on player velocity
-        if (Mathf.Abs(_rb.velocity.x) > _runningVelocity) 
-        {
-            _anim.speed = Mathf.Abs(_rb.velocity.x) / _runningVelocity * _baseAnimationSpeed;
-        }
-        else if (_anim.speed != _baseAnimationSpeed)
-        {
-            _anim.speed = _baseAnimationSpeed;
-        }
-
+        HandleRunningAnimationSpeed();
         PlayRunningParticles();
         PlayWallHangParticles();
         UpdateAnimator();
@@ -89,11 +86,24 @@ public class PlayerVisuals : MonoBehaviour
         }
     }
 
+    void HandleRunningAnimationSpeed()
+    {
+        // Increases animation speed based on player velocity
+        if (Mathf.Abs(_rb.velocity.x) > _runningVelocity)
+        {
+            _anim.speed = Mathf.Abs(_rb.velocity.x) / _runningVelocity * _baseAnimationSpeed;
+        }
+        else if (_anim.speed != _baseAnimationSpeed)
+        {
+            _anim.speed = _baseAnimationSpeed;
+        }
+    }
+
     void PlayRunningParticles()
     {
         if (_runningParticles != null)
         {
-            if (Mathf.Abs(_rb.velocity.x) > 0.1f && _playerMovement.Grounded)
+            if (Mathf.Abs(_rb.velocity.x) > 0.1f && _player.Grounded && !_player.IsDead)
             {
                 if (!_runningParticles.isEmitting)
                 {
@@ -111,7 +121,7 @@ public class PlayerVisuals : MonoBehaviour
     {
         if (_wallHangParticles != null)
         {
-            if (_playerMovement.WallHanging && _playerMovement.Falling)
+            if (_player.WallHanging && _player.Falling && !_player.IsDead)
             {
                 if (!_wallHangParticles.isEmitting)
                 {
@@ -138,6 +148,14 @@ public class PlayerVisuals : MonoBehaviour
         if (_multijumpParticles != null)
         {
             _multijumpParticles.Play();
+        }
+    }
+
+    void EmitDeathParticles()
+    {
+        if (_deathParticles != null)
+        {
+            _deathParticles.Play();
         }
     }
     
@@ -177,7 +195,8 @@ public class PlayerVisuals : MonoBehaviour
     void UpdateAnimator()
     {
         _anim.SetFloat(_hashHorizontalVelocity, Mathf.Abs(_rb.velocity.x));
-        _anim.SetBool(_hashIsFalling, _playerMovement.Falling);
-        _anim.SetBool(_hashIsJumping, _playerMovement.Jumping);
+        _anim.SetBool(_hashIsFalling, _player.Falling);
+        _anim.SetBool(_hashIsJumping, _player.Jumping);
+        _anim.SetBool(_hashIsDead, _player.IsDead);
     }
 }

@@ -22,7 +22,6 @@ public class PlayerMovement : MonoBehaviour
     [Header("Walljump")]
     [SerializeField] int _walljumpAccelerationFrames = 5;
     [SerializeField] float _walljumpAcceleration = 2.0f;
-    [SerializeField] float _walljumpWindow = 0.2f;
 
     [Header("Gravity Scales")]
     [SerializeField] float _baseGravityScale        = 2f;
@@ -44,13 +43,17 @@ public class PlayerMovement : MonoBehaviour
     public event Action<int, Vector2> playerWalljumped;
     public event Action playerGroundjumped;
     public event Action playerMultijumped;
+    public event Action playerDied;
 
     public bool Grounded    { get; private set; }
     public bool Jumping     { get; private set; }
     public bool Falling     { get; private set; }
     public bool WallHanging { get; private set; }
+    public bool IsDead      { get; private set; }
 
     // Player state
+    Vector3 _spawnPoint;
+
     Vector2 _velocityChange;
 
     int _facingDirection = 1;
@@ -77,11 +80,20 @@ public class PlayerMovement : MonoBehaviour
     {
         _rb     = GetComponent<Rigidbody2D>();
         _inputs = GetComponent<PlayerInputs>();
+
+        _spawnPoint = transform.position;
     }
 
     void Update()
     {
-        FaceMovementDirection();
+        if (!IsDead)
+        {
+            FaceMovementDirection();
+        }
+        else
+        {
+
+        }
     }
 
     void FixedUpdate()
@@ -90,30 +102,58 @@ public class PlayerMovement : MonoBehaviour
 
         _debugString.Clear();
 
-        _rb.gravityScale = _baseGravityScale;
-        _velocityChange = new Vector2(0.0f, 0.0f);
+        if (!IsDead)
+        {
+            _rb.gravityScale = _baseGravityScale;
+            _velocityChange = new Vector2(0.0f, 0.0f);
 
-        // State changes, without directly affecting physics or logic
-        GroundCheck();
-        UpdateFallingState();
-        WallCheck();
-        WallHangingCheck();
+            // State changes, without directly affecting physics or logic
+            GroundCheck();
+            UpdateFallingState();
+            WallCheck();
+            WallHangingCheck();
 
-        // Physics, depending on state and inputs
-        HandleHorizontalAcceleration();
-        HandleVerticalMovement();
-        UpdateGravityScales();
+            // Physics, depending on state and inputs
+            HandleHorizontalAcceleration();
+            HandleVerticalMovement();
+            UpdateGravityScales();
 
-        // Apply velocity changes
-        _rb.velocity += _velocityChange;
+            // Apply velocity changes
+            _rb.velocity += _velocityChange;
 
-        // Clamp velocity values (for now only falling velocity)
-        float clampedVerticalVelocity = Mathf.Max(_rb.velocity.y, _fallingVelocityLimit);
-        _rb.velocity = new Vector2(_rb.velocity.x, clampedVerticalVelocity);
+            // Clamp velocity values (for now only falling velocity)
+            float clampedVerticalVelocity = Mathf.Max(_rb.velocity.y, _fallingVelocityLimit);
+            _rb.velocity = new Vector2(_rb.velocity.x, clampedVerticalVelocity);
+        }
+        else
+        {
+            _rb.velocity = Vector2.zero;
+        }
 
         // DEBUG
+        _debugString.AppendLine($"isDead :  {IsDead}");
         _debugString.AppendLine($"Total velocity: {_rb.velocity.x}");
         DisplayDebugInfo();
+    }
+
+    public void Kill()
+    {
+        if (!IsDead)
+        {
+            IsDead = true;
+            _rb.isKinematic = true;
+            playerDied?.Invoke();
+
+            StartCoroutine(RespawnPlayerAfterDelay(1f));
+        }
+    }
+
+    IEnumerator RespawnPlayerAfterDelay(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        transform.position = _spawnPoint;
+        IsDead = false;
+        _rb.isKinematic = false;
     }
 
     void HandleHorizontalAcceleration()
@@ -128,11 +168,11 @@ public class PlayerMovement : MonoBehaviour
         float acceleration = _baseAcceleration;
         float accelerationDirection = 0.0f;
 
-        // Walljump overrides input acceleration for duration
         bool isDuringWallJump = _walljumpFrame < _walljumpAccelerationFrames;
 
         if (!isDuringWallJump)
         {
+            // Regular acceleration, if player is not wallhanging
             if (!WallHanging)
             {
                 accelerationDirection = _inputs.HorizontalInput;
@@ -140,6 +180,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            // Walljump overrides input acceleration for duration
             _walljumpFrame++;
             acceleration = _walljumpAcceleration;
             accelerationDirection = -_wallDirection;
@@ -319,5 +360,6 @@ public class PlayerMovement : MonoBehaviour
     {
         GlobalText.Instance.Show(_debugString.ToString());
     }
+
 }
 
