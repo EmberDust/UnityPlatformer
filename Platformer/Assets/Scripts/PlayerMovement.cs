@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float _baseGravityScale        = 2f;
     [SerializeField] float _ascendingGravityScale   = 1f;
     [SerializeField] float _fallingGravityScale     = 3f;
-    [SerializeField] float _wallHangingGravityScale = 0.2f;
+    [SerializeField] float _wallSlideGravityScale = 0.2f;
 
     [Space]
     [Header("Ground Check")]
@@ -45,11 +45,11 @@ public class PlayerMovement : MonoBehaviour
     public event Action playerMultijumped;
     public event Action playerDied;
 
-    public bool Grounded    { get; private set; }
-    public bool Jumping     { get; private set; }
-    public bool Falling     { get; private set; }
-    public bool WallHanging { get; private set; }
-    public bool IsDead      { get; private set; }
+    public bool Grounded      { get; private set; }
+    public bool Jumping       { get; private set; }
+    public bool Falling       { get; private set; }
+    public bool IsWallSliding { get; private set; }
+    public bool IsDead        { get; private set; }
 
     // Player state
     Vector3 _spawnPoint;
@@ -62,12 +62,12 @@ public class PlayerMovement : MonoBehaviour
     float _timeLastGrounded = -10.0f;
     int _walljumpFrame = 0;
 
-    // Wallhanging values
+    // Wall slide values
     Vector2 _touchedWallPosition = new Vector2(0f, 0f);
     bool _isTouchingWall = false;
     int _wallDirection = 0; 
 
-    bool _wallHangStoppedFall = false;
+    bool _wallSlideStoppedFall = false;
 
     // Cashed components
     PlayerInputs _inputs;
@@ -90,10 +90,6 @@ public class PlayerMovement : MonoBehaviour
         {
             FaceMovementDirection();
         }
-        else
-        {
-
-        }
     }
 
     void FixedUpdate()
@@ -111,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
             GroundCheck();
             UpdateFallingState();
             WallCheck();
-            WallHangingCheck();
+            WallSlideCheck();
 
             // Physics, depending on state and inputs
             HandleHorizontalAcceleration();
@@ -125,15 +121,11 @@ public class PlayerMovement : MonoBehaviour
             float clampedVerticalVelocity = Mathf.Max(_rb.velocity.y, _fallingVelocityLimit);
             _rb.velocity = new Vector2(_rb.velocity.x, clampedVerticalVelocity);
         }
-        else
-        {
-            _rb.velocity = Vector2.zero;
-        }
 
         // DEBUG
         _debugString.AppendLine($"isDead :  {IsDead}");
         _debugString.AppendLine($"Total velocity: {_rb.velocity.x}");
-        DisplayDebugInfo();
+        GlobalText.Instance.Show(_debugString.ToString());
     }
 
     public void Kill()
@@ -141,7 +133,10 @@ public class PlayerMovement : MonoBehaviour
         if (!IsDead)
         {
             IsDead = true;
+
+            _rb.velocity = Vector2.zero;
             _rb.isKinematic = true;
+
             playerDied?.Invoke();
 
             StartCoroutine(RespawnPlayerAfterDelay(1f));
@@ -162,7 +157,7 @@ public class PlayerMovement : MonoBehaviour
         float velocityDirection = Mathf.Sign(horizontalVelocity);
 
         // Deceleration, can't exceed current velocity to prevent character from becoming a pendulum
-        _velocityChange.x += Mathf.Clamp(_baseDeceleration * -velocityDirection, -Mathf.Abs(horizontalVelocity), Mathf.Abs(horizontalVelocity));
+        _velocityChange.x += Mathf.Min(_baseDeceleration, Mathf.Abs(horizontalVelocity)) * -velocityDirection;
 
         // Horizontal acceleration
         float acceleration = _baseAcceleration;
@@ -172,8 +167,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (!isDuringWallJump)
         {
-            // Regular acceleration, if player is not wallhanging
-            if (!WallHanging)
+            // Regular acceleration, if player is not wall sliding
+            if (!IsWallSliding)
             {
                 accelerationDirection = _inputs.HorizontalInput;
             }
@@ -189,12 +184,12 @@ public class PlayerMovement : MonoBehaviour
         _velocityChange.x += acceleration * accelerationDirection;
 
         // Soft limit player horizontal velocity
-        if (Mathf.Abs(horizontalVelocity + _velocityChange.x) > _thresholdVelocity)
+        float velocityExcess = Mathf.Abs(horizontalVelocity + _velocityChange.x) - _thresholdVelocity;
+        if (velocityExcess > 0.0f)
         {
-            float excessiveVelocity = Mathf.Abs(horizontalVelocity + _velocityChange.x) - _thresholdVelocity;
-            float excessiveVelocityDirection = Mathf.Sign(horizontalVelocity + _velocityChange.x);
-            // Don't change speed below threshold for more consistent movement
-            _velocityChange.x += Mathf.Clamp(_thresholdDeceleration * -excessiveVelocityDirection, -excessiveVelocity, excessiveVelocity);
+            float velocityExcessDirection = Mathf.Sign(horizontalVelocity + _velocityChange.x);
+            // Don't drop velocity below threshold value
+            _velocityChange.x += Mathf.Min(_thresholdDeceleration, velocityExcess) * -velocityExcessDirection;
         }
     }
 
@@ -202,16 +197,16 @@ public class PlayerMovement : MonoBehaviour
     {
         float newVerticalVelocity = _rb.velocity.y;
 
-        // Brake the fall speed on wallhang
-        if (WallHanging && Falling && !_wallHangStoppedFall)
+        // Brake the fall speed on wall slide
+        if (IsWallSliding && Falling && !_wallSlideStoppedFall)
         {
             newVerticalVelocity = 0.0f;
-            _wallHangStoppedFall = true;
+            _wallSlideStoppedFall = true;
         }
 
         // Rules for different kinds of jump
         bool groundjumpPossible = _timeLastGrounded + _coyoteTime > Time.time;
-        bool walljumpPossible = WallHanging;
+        bool walljumpPossible = IsWallSliding;
         bool multijumpPossible = _jumpsLeft > 0;
 
         bool jumpPossible = groundjumpPossible || walljumpPossible || multijumpPossible;
@@ -263,9 +258,9 @@ public class PlayerMovement : MonoBehaviour
             if (_inputs.JumpPressed)
                 _rb.gravityScale = _ascendingGravityScale;
         }
-        else if (WallHanging)
+        else if (IsWallSliding)
         {
-            _rb.gravityScale = _wallHangingGravityScale;
+            _rb.gravityScale = _wallSlideGravityScale;
         }
         else if (Falling)
         {
@@ -307,18 +302,18 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void WallHangingCheck()
+    void WallSlideCheck()
     {
-        bool suitableForWallHanging = _isTouchingWall && !Grounded;
+        bool suitableForWallSlide = _isTouchingWall && !Grounded;
 
-        if (suitableForWallHanging && _inputs.WallGrabPressed)
+        if (suitableForWallSlide && _inputs.WallGrabPressed)
         {
-            WallHanging = true;
+            IsWallSliding = true;
         }
         else
         {
-            WallHanging = false;
-            _wallHangStoppedFall = false;
+            IsWallSliding = false;
+            _wallSlideStoppedFall = false;
         }
     }
 
@@ -340,7 +335,7 @@ public class PlayerMovement : MonoBehaviour
 
     void FaceMovementDirection()
     {
-        if (!WallHanging)
+        if (!IsWallSliding)
         {
             if (_inputs.HorizontalInput < 0.0f && _facingDirection == 1)
             {
@@ -355,11 +350,5 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
-
-    void DisplayDebugInfo()
-    {
-        GlobalText.Instance.Show(_debugString.ToString());
-    }
-
 }
 

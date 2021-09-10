@@ -121,7 +121,7 @@ public class PlayerVisuals : MonoBehaviour
     {
         if (_wallHangParticles != null)
         {
-            if (_player.WallHanging && _player.Falling && !_player.IsDead)
+            if (_player.IsWallSliding && _player.Falling && !_player.IsDead)
             {
                 if (!_wallHangParticles.isEmitting)
                 {
