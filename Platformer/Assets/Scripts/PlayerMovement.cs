@@ -123,7 +123,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // DEBUG
-        _debugString.AppendLine($"isDead :  {IsDead}");
         _debugString.AppendLine($"Total velocity: {_rb.velocity.x}");
         GlobalText.Instance.Show(_debugString.ToString());
     }
