@@ -123,7 +123,9 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // DEBUG
-        _debugString.AppendLine($"Total velocity: {_rb.velocity.x}");
+        _debugString.AppendLine($"horizontal velocity: {_rb.velocity.x}");
+        _debugString.AppendLine($"vertical velocity  : {_rb.velocity.y}");
+        _debugString.AppendLine($"gravity scale      : {_rb.gravityScale}");
         GlobalText.Instance.Show(_debugString.ToString());
     }
 
@@ -148,6 +150,20 @@ public class PlayerMovement : MonoBehaviour
         transform.position = _spawnPoint;
         IsDead = false;
         _rb.isKinematic = false;
+    }
+
+    public void GiveVelocityBoost(Vector2 boostAmount, bool resetGravity = true)
+    {
+        // Horizontal boost applied in the direction of current horizontal velocity
+        Vector2 newVelocity = new Vector2(_rb.velocity.x + Mathf.Sign(_rb.velocity.x) * boostAmount.x,
+                                          _rb.velocity.y + boostAmount.y);
+
+        if (resetGravity)
+        {
+            newVelocity.y = Mathf.Max(newVelocity.y, boostAmount.y);
+        }
+
+        _rb.velocity = newVelocity;
     }
 
     void HandleHorizontalAcceleration()
@@ -350,4 +366,5 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 }
+
 

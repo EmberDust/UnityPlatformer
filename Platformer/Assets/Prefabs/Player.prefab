@@ -29225,7 +29225,7 @@ MonoBehaviour:
   _baseGravityScale: 2.75
   _ascendingGravityScale: 0.66
   _fallingGravityScale: 2.75
-  _wallHangingGravityScale: 0.1
+  _wallSlideGravityScale: 0.2
   _groundCheckPoint: {fileID: 2014453868632953729}
   _coyoteTime: 0.1
   _groundMask:
