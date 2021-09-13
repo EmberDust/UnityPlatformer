@@ -508,6 +508,63 @@ Transform:
   m_Father: {fileID: 63879940}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &370738216
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4923431796499811363, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_Name
+      value: Jumprefresher Gem
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_RootOrder
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 10.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 8.030001
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
 --- !u!1 &392606159
 GameObject:
   m_ObjectHideFlags: 0
@@ -2904,6 +2961,63 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2539233447871964623, guid: 24d7868db3c6b2c4586bca480a4f47e7, type: 3}
   m_PrefabInstance: {fileID: 2539233448430423241}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &562635427
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4923431796499811363, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_Name
+      value: Jumprefresher Gem
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_RootOrder
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 10.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 6.28
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
 --- !u!1 &623747315
 GameObject:
   m_ObjectHideFlags: 0
@@ -3518,7 +3632,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4923431796499811363, guid: f809a6a65c500604ca50d0a9eeb2c104, type: 3}
       propertyPath: m_Name
-      value: Velocity Gem (1)
+      value: Velocity Gem
       objectReference: {fileID: 0}
     - target: {fileID: 4923431796499811364, guid: f809a6a65c500604ca50d0a9eeb2c104, type: 3}
       propertyPath: m_RootOrder
@@ -3923,6 +4037,63 @@ Transform:
   m_Father: {fileID: 1852869817}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1666055579
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4923431796499811363, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_Name
+      value: Jumprefresher Gem
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_RootOrder
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 10.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 7.168
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
 --- !u!1 &1687821774
 GameObject:
   m_ObjectHideFlags: 0
@@ -4549,6 +4720,63 @@ Transform:
   m_Father: {fileID: 63879940}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!1001 &1789054240
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4923431796499811363, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_Name
+      value: Jumprefresher Gem
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_RootOrder
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 12.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.99
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923431796499811364, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 57f3b1cc503a6b249bb1fa26e55e4b84, type: 3}
 --- !u!1 &1852869816
 GameObject:
   m_ObjectHideFlags: 0
