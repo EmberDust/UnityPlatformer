@@ -152,7 +152,7 @@ public class PlayerMovement : MonoBehaviour
         _rb.isKinematic = false;
     }
 
-    public void GiveVelocityBoost(Vector2 boostAmount, bool resetGravity = true)
+    public void GiveVelocityBoost(Vector2 boostAmount, bool resetGravity = false)
     {
         // Horizontal boost applied in the direction of current horizontal velocity
         Vector2 newVelocity = new Vector2(_rb.velocity.x + Mathf.Sign(_rb.velocity.x) * boostAmount.x,
@@ -164,6 +164,18 @@ public class PlayerMovement : MonoBehaviour
         }
 
         _rb.velocity = newVelocity;
+    }
+
+    public void GiveMultijumpCharges(int multijumpCharges, bool ignoreLimit = false)
+    {
+        if (ignoreLimit)
+        {
+            _jumpsLeft += multijumpCharges;
+        }
+        else
+        {
+            _jumpsLeft = Mathf.Min(_additionalJumps, _jumpsLeft + multijumpCharges);
+        }
     }
 
     void HandleHorizontalAcceleration()
