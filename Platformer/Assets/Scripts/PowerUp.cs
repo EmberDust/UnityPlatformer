@@ -8,8 +8,6 @@ public abstract class PowerUp : MonoBehaviour
 
     public bool WasConsumed { get; protected set; }
 
-    protected GameObject _playerObject;
-    protected PlayerMovement _playerScript;
     protected Animator _animator;
 
     protected Vector2 _startingPosition;
@@ -17,8 +15,6 @@ public abstract class PowerUp : MonoBehaviour
 
     private void Start()
     {
-        _playerScript = FindObjectOfType<PlayerMovement>();
-        _playerObject = _playerScript.gameObject;
         _animator = GetComponent<Animator>();
 
         _hashWasConsumed = Animator.StringToHash("WasConsumed");
@@ -28,7 +24,7 @@ public abstract class PowerUp : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject == _playerObject)
+        if (collision.gameObject == GameManager.Instance.PlayerObject)
         {
             if (!WasConsumed)
             {

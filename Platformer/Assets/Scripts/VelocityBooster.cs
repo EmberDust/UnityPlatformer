@@ -9,6 +9,6 @@ public class VelocityBooster : PowerUp
 
     protected override void GrantPowerUp()
     {
-        _playerScript.GiveVelocityBoost(_velocityBoost, _resetGravity);
+        GameManager.Instance.PlayerScript.GiveVelocityBoost(_velocityBoost, _resetGravity);
     }
 }

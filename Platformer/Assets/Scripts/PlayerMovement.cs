@@ -43,17 +43,17 @@ public class PlayerMovement : MonoBehaviour
     public event Action<int, Vector2> playerWalljumped;
     public event Action playerGroundjumped;
     public event Action playerMultijumped;
+    public event Action playerHasBeenDisabled;
+    public event Action playerHasBeenEnabled;
     public event Action playerDied;
 
     public bool Grounded      { get; private set; }
     public bool Jumping       { get; private set; }
     public bool Falling       { get; private set; }
     public bool IsWallSliding { get; private set; }
-    public bool IsDead        { get; private set; }
+    public bool IsDisabled    { get; private set; }
 
     // Player state
-    Vector3 _spawnPoint;
-
     Vector2 _velocityChange;
 
     int _facingDirection = 1;
@@ -81,12 +81,16 @@ public class PlayerMovement : MonoBehaviour
         _rb     = GetComponent<Rigidbody2D>();
         _inputs = GetComponent<PlayerInputs>();
 
-        _spawnPoint = transform.position;
+        GameManager.Instance.CheckpointPosition = transform.position;
+
+        DontDestroyOnLoad(gameObject);
+
+        DisablePlayer();
     }
 
     void Update()
     {
-        if (!IsDead)
+        if (!IsDisabled)
         {
             FaceMovementDirection();
         }
@@ -98,7 +102,7 @@ public class PlayerMovement : MonoBehaviour
 
         _debugString.Clear();
 
-        if (!IsDead)
+        if (!IsDisabled)
         {
             _rb.gravityScale = _baseGravityScale;
             _velocityChange = new Vector2(0.0f, 0.0f);
@@ -129,27 +133,50 @@ public class PlayerMovement : MonoBehaviour
         GlobalText.Instance.Show(_debugString.ToString());
     }
 
-    public void Kill()
+    public void DisablePlayer()
     {
-        if (!IsDead)
+        if (!IsDisabled)
         {
-            IsDead = true;
+            IsDisabled = true;
 
             _rb.velocity = Vector2.zero;
             _rb.isKinematic = true;
 
-            playerDied?.Invoke();
-
-            StartCoroutine(RespawnPlayerAfterDelay(1f));
+            playerHasBeenDisabled?.Invoke();
         }
     }
 
-    IEnumerator RespawnPlayerAfterDelay(float seconds)
+    public void EnablePlayer()
     {
-        yield return new WaitForSeconds(seconds);
-        transform.position = _spawnPoint;
-        IsDead = false;
-        _rb.isKinematic = false;
+        if (IsDisabled)
+        {
+            IsDisabled = false;
+            _rb.isKinematic = false;
+
+            playerHasBeenEnabled?.Invoke();
+        }
+    }
+
+    public void Kill()
+    {
+        if (!IsDisabled)
+        {
+            playerDied?.Invoke();
+
+            DisablePlayer();
+
+            StartCoroutine(RespawnPlayerAtCheckpoint(1f));
+        }
+    }
+
+    public IEnumerator RespawnPlayerAtCheckpoint(float secondsDelay = 0f)
+    {
+        yield return new WaitForSeconds(secondsDelay);
+
+        _rb.velocity = Vector2.zero;
+        transform.position = GameManager.Instance.CheckpointPosition;
+
+        EnablePlayer();
     }
 
     public void GiveVelocityBoost(Vector2 boostAmount, bool resetGravity = false)

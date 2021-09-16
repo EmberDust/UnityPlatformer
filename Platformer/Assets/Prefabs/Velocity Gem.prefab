@@ -144,3 +144,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _respawnDelay: 4
   _velocityBoost: {x: 2, y: 0}
+  _resetGravity: 0

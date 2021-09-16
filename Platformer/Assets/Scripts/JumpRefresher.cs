@@ -9,6 +9,6 @@ public class JumpRefresher : PowerUp
 
     protected override void GrantPowerUp()
     {
-        _playerScript.GiveMultijumpCharges(_numberOfMultijumps, _ignoreLimit);
+        GameManager.Instance.PlayerScript.GiveMultijumpCharges(_numberOfMultijumps, _ignoreLimit);
     }
 }

@@ -4,20 +4,11 @@ using UnityEngine;
 
 public class SpikeScript : MonoBehaviour
 {
-    GameObject _playerObject;
-    PlayerMovement _playerScript;
-
-    private void Start()
-    {
-        _playerScript = FindObjectOfType<PlayerMovement>();
-        _playerObject = _playerScript.gameObject;
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject == _playerObject)
+        if (collision.gameObject == GameManager.Instance.PlayerObject)
         {
-            _playerScript.Kill();
+            GameManager.Instance.PlayerScript.Kill();
         }
     }
 }

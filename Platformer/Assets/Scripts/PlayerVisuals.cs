@@ -103,7 +103,7 @@ public class PlayerVisuals : MonoBehaviour
     {
         if (_runningParticles != null)
         {
-            if (Mathf.Abs(_rb.velocity.x) > 0.1f && _player.Grounded && !_player.IsDead)
+            if (Mathf.Abs(_rb.velocity.x) > 0.1f && _player.Grounded && !_player.IsDisabled)
             {
                 if (!_runningParticles.isEmitting)
                 {
@@ -121,7 +121,7 @@ public class PlayerVisuals : MonoBehaviour
     {
         if (_wallHangParticles != null)
         {
-            if (_player.IsWallSliding && _player.Falling && !_player.IsDead)
+            if (_player.IsWallSliding && _player.Falling && !_player.IsDisabled)
             {
                 if (!_wallHangParticles.isEmitting)
                 {
@@ -197,6 +197,6 @@ public class PlayerVisuals : MonoBehaviour
         _anim.SetFloat(_hashHorizontalVelocity, Mathf.Abs(_rb.velocity.x));
         _anim.SetBool(_hashIsFalling, _player.Falling);
         _anim.SetBool(_hashIsJumping, _player.Jumping);
-        _anim.SetBool(_hashIsDead, _player.IsDead);
+        _anim.SetBool(_hashIsDead, _player.IsDisabled);
     }
 }
