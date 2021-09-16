@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    // Singleton
+    static PlayerMovement Instance { get; set; }
+
     [SerializeField]float _timeScale = 1.0f;
 
     [Space]
@@ -76,12 +79,22 @@ public class PlayerMovement : MonoBehaviour
     // DEBUG VALUES
     System.Text.StringBuilder _debugString = new System.Text.StringBuilder();
 
+    void Awake()
+    {
+        if (PlayerMovement.Instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
     void Start()
     {
         _rb     = GetComponent<Rigidbody2D>();
         _inputs = GetComponent<PlayerInputs>();
-
-        GameManager.Instance.CheckpointPosition = transform.position;
 
         DontDestroyOnLoad(gameObject);
 

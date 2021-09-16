@@ -14,11 +14,13 @@ public class GlobalText : MonoBehaviour
     {
         if (GlobalText.Instance != null)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
-
-        Instance = this;
-        Debug.Log("Global text singleton has been instantiated");
+        else
+        {
+            Instance = this;
+            Debug.Log("Global text singleton has been instantiated");
+        }
     }
 
     void Start()

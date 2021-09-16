@@ -6,32 +6,38 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] float _delayBeforeFadeOut = 0.4f;
+    [SerializeField] float _delayAfterFadeOutStarted  = 0.4f;
+
+    [SerializeField] bool _loopLevels = false;
     [SerializeField] List<string> _scenesLoadOrder;
-    [SerializeField] string _loadscreenScene;
 
     // Singleton
     public static GameManager Instance { get; private set; }
 
-    int _currentSceneIndex = 0;
-
-    SceneInfo _currentSceneInfo;
-
     public Vector2 CheckpointPosition { get; set; }
-    public Vector2 ExitPosition { get; set; }
+    public Vector2 ExitPosition       { get; set; }
 
     // Cashed player info for other scripts to use
     public PlayerMovement PlayerScript { get; private set; }
-    public GameObject PlayerObject { get; private set; }
+    public GameObject     PlayerObject { get; private set; }
 
     public Action sceneLoaded;
+    public Action sceneEnded;
 
-    AsyncOperation loadSceneOperation;
+    string _currentSceneName;
+    int    _currentSceneIndex = 0;
+
+    Animator _transitionAnimator;
+
+    AsyncOperation _loadSceneOperator;
+    bool _fadeOutFinished = true;
 
     void Awake()
     {
         if (GameManager.Instance != null)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
         else
         {
@@ -44,10 +50,13 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        _transitionAnimator = GetComponentInChildren<Animator>();
+
         PlayerScript = FindObjectOfType<PlayerMovement>();
         PlayerObject = PlayerScript.gameObject;
 
         sceneLoaded += OnSceneLoad;
+        sceneEnded += OnSceneEnd;
 
         StartCoroutine(Utils.DoAfterAFrame(sceneLoaded.Invoke));
     }
@@ -58,27 +67,30 @@ public class GameManager : MonoBehaviour
 
         if (nextSceneIndex < _scenesLoadOrder.Count)
         {
-            Debug.Log($"Started loading scene {_scenesLoadOrder[nextSceneIndex]}");
-
-            PlayerScript.DisablePlayer();
-
-            SceneManager.LoadScene(_loadscreenScene, LoadSceneMode.Single);
-            StartCoroutine(AsyncLoadScene(_scenesLoadOrder[nextSceneIndex]));
-
-            _currentSceneIndex++;
+            StartCoroutine(LoadScene(_scenesLoadOrder[nextSceneIndex]));
         }
-        else
+        else if (_loopLevels)
+        {
+            StartCoroutine(LoadScene(_scenesLoadOrder[0]));
+        }
+        else 
         {
             Debug.Log("No more scenes in load order");
         }
-
     }
 
-    IEnumerator AsyncLoadScene(string SceneName)
+    IEnumerator LoadScene(string sceneName)
     {
-        loadSceneOperation = SceneManager.LoadSceneAsync(SceneName);
+        sceneEnded?.Invoke();
 
-        while (!loadSceneOperation.isDone)
+        while (!_fadeOutFinished)
+        {
+            yield return null;
+        }
+
+        _loadSceneOperator = SceneManager.LoadSceneAsync(sceneName);
+
+        while (!_loadSceneOperator.isDone)
         {
             yield return null;
         }
@@ -88,17 +100,20 @@ public class GameManager : MonoBehaviour
 
     void OnSceneLoad()
     {
-        Debug.Log("New scene loaded");
+        _currentSceneName = SceneManager.GetActiveScene().name;
+        _currentSceneIndex = _scenesLoadOrder.IndexOf(_currentSceneName);
 
-        _currentSceneInfo = FindObjectOfType<SceneInfo>();
+        Debug.Log($"Scene name: {_currentSceneName} Index: {_currentSceneIndex}. Loaded.");
 
-        if (_currentSceneInfo != null)
+        PlayerSpawn playerSpawn = FindObjectOfType<PlayerSpawn>();
+
+        if (playerSpawn != null)
         {
-            CheckpointPosition = _currentSceneInfo.PlayerSpawnPosition;
+            CheckpointPosition = playerSpawn.transform.position;
         }
         else
         {
-            Debug.LogWarning("Scene info wasn't found");
+            Debug.LogWarning("Player Spawn wasn't found");
             CheckpointPosition = Vector2.zero;
         }
 
@@ -114,6 +129,27 @@ public class GameManager : MonoBehaviour
             ExitPosition = Vector2.zero;
         }
 
-        StartCoroutine(PlayerScript.RespawnPlayerAtCheckpoint(1.0f));
+        _transitionAnimator.SetTrigger("FadeInTriggered");
+
+        StartCoroutine(PlayerScript.RespawnPlayerAtCheckpoint(0.2f));
+    }
+
+    void OnSceneEnd()
+    {
+        PlayerScript.DisablePlayer();
+
+        _fadeOutFinished = false;
+        StartCoroutine(FadeOutToNextScene());
+    }
+
+    IEnumerator FadeOutToNextScene()
+    {
+        yield return new WaitForSeconds(_delayBeforeFadeOut);
+
+        _transitionAnimator.SetTrigger("FadeOutTriggered");
+
+        yield return new WaitForSeconds(_delayAfterFadeOutStarted);
+
+        _fadeOutFinished = true;
     }
 }

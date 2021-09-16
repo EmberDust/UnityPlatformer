@@ -6,12 +6,10 @@ using Cinemachine;
 public class PlayerVirtualCamera : MonoBehaviour
 {
     CinemachineVirtualCamera _virtualCamera;
-    CinemachineVirtualCamera _passiveCamera;
 
     private void Awake()
     {
         _virtualCamera = GetComponent<CinemachineVirtualCamera>();
-        _passiveCamera = GetComponentInChildren<CinemachineVirtualCamera>();
     }
 
     void Start()
@@ -21,13 +19,11 @@ public class PlayerVirtualCamera : MonoBehaviour
 
     void FollowPlayer()
     {
-        Debug.Log("Started following player transform");
         _virtualCamera.Follow = GameManager.Instance.PlayerObject.transform;
     }
 
     void StopFollowing()
     {
-        Debug.Log("Stopped following");
         _virtualCamera.Follow = null;
     }
 
