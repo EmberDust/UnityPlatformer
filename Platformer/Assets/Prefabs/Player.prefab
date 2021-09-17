@@ -29112,6 +29112,7 @@ GameObject:
   - component: {fileID: 1227212753}
   - component: {fileID: 2204184795717809600}
   - component: {fileID: 728836082}
+  - component: {fileID: 104098792}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -29287,6 +29288,22 @@ MonoBehaviour:
   _walljumpParticles: {fileID: 595268745}
   _wallHangParticles: {fileID: 1990032881}
   _deathParticles: {fileID: 1478986520}
+--- !u!114 &104098792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7945967496813168226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bee27f5d54d24f489a41285b8fe350f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerPathFile: {fileID: 11400000, guid: 964649c8356ae1b418be62264336ac6a, type: 2}
+  _framesBetweenSaves: 3
+  _pauseTracker: 1
+  _overwriteCurrentPath: 1
 --- !u!1 &7945967496979675913
 GameObject:
   m_ObjectHideFlags: 0

@@ -72,7 +72,7 @@ public class PlayerMovement : MonoBehaviour
 
     bool _wallSlideStoppedFall = false;
 
-    // Cashed components
+    // Cached components
     PlayerInputs _inputs;
     Rigidbody2D _rb;
 

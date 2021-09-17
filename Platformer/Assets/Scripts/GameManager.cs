@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     public Vector2 CheckpointPosition { get; set; }
     public Vector2 ExitPosition       { get; set; }
 
-    // Cashed player info for other scripts to use
+    // Cached player info for other scripts to use
     public PlayerMovement PlayerScript { get; private set; }
     public GameObject     PlayerObject { get; private set; }
 
