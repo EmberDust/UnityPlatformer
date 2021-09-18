@@ -239,10 +239,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55a76396c5dddff41b3b1ce4acdef1d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _delayForAnimation: 0.4
+  _delayBeforeFadeOut: 0.4
+  _delayAfterFadeOutStarted: 0.4
   _loopLevels: 1
   _scenesLoadOrder:
   - SampleScene
   - Level 2
   - Level 3
-  _loadscreenScene: Load Scene
+  _fallHeight: -3

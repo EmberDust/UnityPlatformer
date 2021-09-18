@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -75,6 +76,7 @@ public class PlayerMovement : MonoBehaviour
     // Cached components
     PlayerInputs _inputs;
     Rigidbody2D _rb;
+    List<Collider2D> _colliders;
 
     // DEBUG VALUES
     System.Text.StringBuilder _debugString = new System.Text.StringBuilder();
@@ -95,6 +97,8 @@ public class PlayerMovement : MonoBehaviour
     {
         _rb     = GetComponent<Rigidbody2D>();
         _inputs = GetComponent<PlayerInputs>();
+
+        _colliders = GetComponents<Collider2D>().ToList();
 
         DontDestroyOnLoad(gameObject);
 
@@ -155,6 +159,11 @@ public class PlayerMovement : MonoBehaviour
             _rb.velocity = Vector2.zero;
             _rb.isKinematic = true;
 
+            foreach(var collider in _colliders)
+            {
+                collider.enabled = false;
+            }
+
             playerHasBeenDisabled?.Invoke();
         }
     }
@@ -165,6 +174,11 @@ public class PlayerMovement : MonoBehaviour
         {
             IsDisabled = false;
             _rb.isKinematic = false;
+
+            foreach (var collider in _colliders)
+            {
+                collider.enabled = true;
+            }
 
             playerHasBeenEnabled?.Invoke();
         }

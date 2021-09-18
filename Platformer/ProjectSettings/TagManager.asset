@@ -14,8 +14,8 @@ TagManager:
   - Ground
   - Background
   - Traps
-  - 
-  - 
+  - Projectiles
+  - Player
   - 
   - 
   - 
@@ -52,4 +52,7 @@ TagManager:
     locked: 0
   - name: Foreground
     uniqueID: 2682629347
+    locked: 0
+  - name: UI
+    uniqueID: 2470428319
     locked: 0

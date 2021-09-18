@@ -47,9 +47,5 @@ public class PlayerVirtualCamera : MonoBehaviour
             GameManager.Instance.PlayerScript.playerHasBeenDisabled -= StopFollowing;
             GameManager.Instance.PlayerScript.playerHasBeenEnabled -= FollowPlayer;
         }
-        else
-        {
-            Debug.LogWarning("PlayerScript wasn't found!");
-        }
     }
 }

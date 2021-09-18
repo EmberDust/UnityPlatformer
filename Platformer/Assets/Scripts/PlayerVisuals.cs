@@ -168,26 +168,14 @@ public class PlayerVisuals : MonoBehaviour
     {
         if (_walljumpParticles != null)
         {
-            int particlesCount = 50;
-
-            // If particle system has bursts - take the first burst values
-            // Yes, this is a crutch
-            if (_walljumpParticles.emission.burstCount > 0)
-            {
-                particlesCount = (int)_walljumpParticles.emission.GetBurst(0).count.constantMax;
-            }
-
-            var emitParams = new ParticleSystem.EmitParams();
-            emitParams.position = contactPosition;
-
             if (direction == 1)
             {
-                _rightWalljumpParticles.Emit(emitParams, particlesCount);
+                Utils.EmitParticleBurstAtPosition(_rightWalljumpParticles, contactPosition);
             }
 
             if (direction == -1)
             {
-                _walljumpParticles.Emit(emitParams, particlesCount);
+                Utils.EmitParticleBurstAtPosition(_leftWalljumpParticles, contactPosition);
             }
         }
     }

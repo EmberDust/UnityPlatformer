@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] bool _loopLevels = false;
     [SerializeField] List<string> _scenesLoadOrder;
 
+    [SerializeField] float _fallHeight = -10f;
+
     // Singleton
     public static GameManager Instance { get; private set; }
 
@@ -59,6 +61,14 @@ public class GameManager : MonoBehaviour
         sceneEnded += OnSceneEnd;
 
         StartCoroutine(Utils.DoAfterAFrame(sceneLoaded.Invoke));
+    }
+
+    void Update()
+    {
+        if (PlayerObject.transform.position.y < _fallHeight)
+        {
+            PlayerScript.Kill();
+        }
     }
 
     public void LoadNextScene()
