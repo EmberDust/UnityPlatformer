@@ -117,8 +117,6 @@ public class PlayerMovement : MonoBehaviour
     {
         Time.timeScale = _timeScale;
 
-        _debugString.Clear();
-
         if (!IsDisabled)
         {
             _rb.gravityScale = _baseGravityScale;
@@ -142,12 +140,6 @@ public class PlayerMovement : MonoBehaviour
             float clampedVerticalVelocity = Mathf.Max(_rb.velocity.y, _fallingVelocityLimit);
             _rb.velocity = new Vector2(_rb.velocity.x, clampedVerticalVelocity);
         }
-
-        // DEBUG
-        _debugString.AppendLine($"horizontal velocity: {_rb.velocity.x}");
-        _debugString.AppendLine($"vertical velocity  : {_rb.velocity.y}");
-        _debugString.AppendLine($"gravity scale      : {_rb.gravityScale}");
-        GlobalText.Instance.Show(_debugString.ToString());
     }
 
     public void DisablePlayer()
@@ -292,10 +284,12 @@ public class PlayerMovement : MonoBehaviour
 
         bool jumpPossible = groundjumpPossible || walljumpPossible || multijumpPossible;
 
-        bool jumpInput = _inputs.ConsumeJumpInput();
+        //bool jumpInput = _inputs.ConsumeJumpInput();
 
-        if (jumpInput && jumpPossible)
+        if (_inputs.JumpInput && jumpPossible)
         {
+            _inputs.ConsumeJumpInput();
+
             // Regular jump from ground here
             if (groundjumpPossible)
             {
@@ -432,5 +426,3 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 }
-
-

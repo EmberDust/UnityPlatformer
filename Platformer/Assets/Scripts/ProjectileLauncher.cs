@@ -10,20 +10,28 @@ public class ProjectileLauncher : MonoBehaviour
     [SerializeField] int _projectilePoolSize = 10;
 
     [Header("Projectile launcher")]
+    [SerializeField] Transform _shootFrom = null;
     [SerializeField] float _delayBetweenShots = 1f;
     [SerializeField] float _projectileVelocity = 0.2f;
-    [Space]
+    [Header("Without player targeting")]
+    [SerializeField] Vector2 _shootDirection = Vector2.up;
+    [SerializeField] float _firstShotDelay = 0.0f;
+    [Header("Player targeting")]
     [SerializeField] bool _targetPlayer = false;
     [SerializeField] LayerMask _playerAndObstaclesLayers;
-    [SerializeField] Vector2 _shootDirection = Vector2.up;
 
     Queue<SpikeProjectile> _projectilePool = new Queue<SpikeProjectile>();
 
+    Vector2 _shootFromPosition;
     float _timeLastShot = 0.0f;
     bool _correctProjectileObject = true;
 
     void Start()
     {
+        _shootFromPosition = _shootFrom != null ? _shootFrom.position : transform.position;
+        // Sets up launchers to shoot exactly after _firstshotdelay
+        _timeLastShot = Time.time - _delayBetweenShots + _firstShotDelay;
+
         _shootDirection.Normalize();
 
         // Fill the pool of projectiles to the base capacity
@@ -38,7 +46,7 @@ public class ProjectileLauncher : MonoBehaviour
         if (_timeLastShot + _delayBetweenShots < Time.time && _correctProjectileObject)
         {
             ShootProjectile();
-            _timeLastShot = Time.time;
+            
         }
     }
 
@@ -83,13 +91,15 @@ public class ProjectileLauncher : MonoBehaviour
             {
                 if (raycastTowardsPlayer.collider.gameObject == GameManager.Instance.PlayerObject)
                 {
-                    ShootProjectile(transform.position, playerDirection * _projectileVelocity);
+                    ShootProjectile(_shootFromPosition, playerDirection * _projectileVelocity);
+                    _timeLastShot = Time.time;
                 }
             }
         }
         else
         {
-            ShootProjectile(transform.position, _shootDirection * _projectileVelocity);
+            ShootProjectile(_shootFromPosition, _shootDirection * _projectileVelocity);
+            _timeLastShot = Time.time;
         }
     }
 

@@ -58,7 +58,7 @@ public class SpikeProjectile : MonoBehaviour
             hasCollided = true;
             animator.SetTrigger(hashHasCollided);
 
-            rb.velocity = rb.velocity * 0.25f;
+            rb.velocity = rb.velocity * 0.15f;
             // Give time to play an animation, before disabling the projectile
             StartCoroutine(Utils.DoAfterDelay(() => { ReadyToBeReturned = true; }, _delayAfterCollision));
 

@@ -11,7 +11,7 @@ public class MovingBlock : MonoBehaviour
 
     LineRenderer _line = null;
     RoutePoint[] _routePoints;
-    List<Vector3> _routePointsWorldPos;
+    List<Vector3> _routePointsPositions;
 
     int _destinationPointIndex = 0;
     int _traverseDirection = 1;
@@ -19,12 +19,12 @@ public class MovingBlock : MonoBehaviour
     void Start()
     {
         // Make a route out of all children objects with RoutePoint component on them
-        _routePointsWorldPos = new List<Vector3>();
+        _routePointsPositions = new List<Vector3>();
 
         _routePoints = GetComponentsInChildren<RoutePoint>();
         foreach (RoutePoint point in _routePoints)
         {
-            _routePointsWorldPos.Add(point.transform.position);
+            _routePointsPositions.Add(point.transform.position);
         }
 
         // If line renderer is present - set it up
@@ -41,7 +41,7 @@ public class MovingBlock : MonoBehaviour
     {
         if (_line != null)
         {
-            _line.positionCount = _routePointsWorldPos.Count;
+            _line.positionCount = _routePointsPositions.Count;
             for (int i = 0; i < _line.positionCount; i++)
             {
                 _line.SetPosition(i, _routePoints[i].transform.localPosition);
@@ -59,10 +59,10 @@ public class MovingBlock : MonoBehaviour
     {
         if (_blockBody != null)
         {
-            if (Vector2.Distance(_routePointsWorldPos[_destinationPointIndex], _blockBody.position) < _speed / 2f)
+            if (Vector2.Distance(_routePointsPositions[_destinationPointIndex], _blockBody.position) < _speed / 2f)
             {
-                // If we've reached the end of route
-                if (_destinationPointIndex + _traverseDirection >= _routePointsWorldPos.Count || _destinationPointIndex + _traverseDirection < 0)
+                // If we've reached the end of the route
+                if (_destinationPointIndex + _traverseDirection >= _routePointsPositions.Count || _destinationPointIndex + _traverseDirection < 0)
                 {
                     // Loop
                     if (_connectEnds)
@@ -81,7 +81,7 @@ public class MovingBlock : MonoBehaviour
             }
             else
             {
-                Vector3 movementDirection = (_routePointsWorldPos[_destinationPointIndex] - _blockBody.position).normalized;
+                Vector3 movementDirection = (_routePointsPositions[_destinationPointIndex] - _blockBody.position).normalized;
                 _blockBody.Translate(movementDirection * _speed, Space.World);
             }
         }

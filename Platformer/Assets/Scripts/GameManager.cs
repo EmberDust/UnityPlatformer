@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
 
     public Vector2 CheckpointPosition { get; set; }
     public Vector2 ExitPosition       { get; set; }
+    public Checkpoint ActiveCheckpoint { get;  private set; }
 
     // Cached player info for other scripts to use
     public PlayerMovement PlayerScript { get; private set; }
@@ -69,6 +70,19 @@ public class GameManager : MonoBehaviour
         {
             PlayerScript.Kill();
         }
+    }
+
+    public void SetNewCheckpoint(Checkpoint newCheckpoint)
+    {
+        if (ActiveCheckpoint != null)
+        {
+            ActiveCheckpoint.IsActive = false;
+        }
+
+        newCheckpoint.IsActive = true;
+        ActiveCheckpoint = newCheckpoint;
+
+        CheckpointPosition = newCheckpoint.transform.position;
     }
 
     public void LoadNextScene()
