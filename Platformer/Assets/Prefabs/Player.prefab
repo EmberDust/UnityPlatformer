@@ -29107,7 +29107,6 @@ GameObject:
   - component: {fileID: 7945967496813168227}
   - component: {fileID: 7945967496813168230}
   - component: {fileID: 7945967496813168229}
-  - component: {fileID: 7945967496813168228}
   - component: {fileID: 2204184795717809600}
   - component: {fileID: 7919087380779501124}
   - component: {fileID: 1227212753}
@@ -29172,7 +29171,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0095613, y: -0.1044603}
+  m_Offset: {x: -0.01929593, y: -0.20183906}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -29183,24 +29182,8 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.39000654, y: 0.39892423}
+  m_Size: {x: 0.33229208, y: 0.59368175}
   m_EdgeRadius: 0
---- !u!58 &7945967496813168228
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7945967496813168226}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 6200000, guid: 4bb0a5a6d79360a43896d663c829a209, type: 2}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.009592295, y: -0.3}
-  serializedVersion: 2
-  m_Radius: 0.19532847
 --- !u!95 &2204184795717809600
 Animator:
   serializedVersion: 3
@@ -29235,15 +29218,15 @@ MonoBehaviour:
   _timeScale: 1
   _baseDeceleration: 1
   _baseAcceleration: 1.5
-  _thresholdVelocity: 3.25
+  _thresholdVelocity: 3
   _thresholdDeceleration: 0.505
   _additionalJumps: 1
-  _jumpSpeed: 4
+  _jumpSpeed: 3.8
   _fallingVelocityLimit: -7
   _walljumpAccelerationFrames: 7
   _walljumpAcceleration: 2
-  _baseGravityScale: 2.75
-  _ascendingGravityScale: 0.66
+  _baseGravityScale: 2
+  _ascendingGravityScale: 0.75
   _fallingGravityScale: 2.75
   _wallSlideGravityScale: 0.15
   _groundCheckPoint: {fileID: 2014453868632953729}
@@ -29302,7 +29285,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _playerPathFile: {fileID: 11400000, guid: 6702e1d331adc174795fcad285a2c6a7, type: 2}
   _framesBetweenSaves: 3
-  _pauseTracker: 0
+  _pauseTracker: 1
   _overwriteCurrentPath: 1
 --- !u!1 &7945967496979675913
 GameObject:
