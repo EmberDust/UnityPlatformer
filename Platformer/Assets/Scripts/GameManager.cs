@@ -6,24 +6,28 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] float _delayBeforeFadeOut = 0.4f;
-    [SerializeField] float _delayAfterFadeOutStarted  = 0.4f;
+    [Header("Player rules")]
+    [SerializeField] float _playerSpawnDelay = 0.25f;
+    [SerializeField] float _playerRespawnDelay = 1.0f;
+    [SerializeField] float _fallHeight = -10f;
 
+    [Header("Level transitions")]
+    [SerializeField] float _delayBeforeFadeOut = 0.4f;
+    [SerializeField] float _delayAfterFadeOutTriggered  = 0.4f;
+
+    [Header("Levels")]
     [SerializeField] bool _loopLevels = false;
     [SerializeField] List<string> _scenesLoadOrder;
-
-    [SerializeField] float _fallHeight = -10f;
 
     // Singleton
     public static GameManager Instance { get; private set; }
 
-    public Vector2 CheckpointPosition { get; set; }
-    public Vector2 ExitPosition       { get; set; }
-    public Checkpoint ActiveCheckpoint { get;  private set; }
+    public Vector2 CheckpointPosition  { get; set; }
+    public Vector2 ExitPosition        { get; set; }
+    public Checkpoint ActiveCheckpoint { get; private set; }
 
-    // Cached player info for other scripts to use
-    public PlayerMovement PlayerScript { get; private set; }
-    public GameObject     PlayerObject { get; private set; }
+    public Player     PlayerScript { get; private set; }
+    public GameObject PlayerObject { get; private set; }
 
     public Action sceneLoaded;
     public Action sceneEnded;
@@ -33,7 +37,7 @@ public class GameManager : MonoBehaviour
 
     Animator _transitionAnimator;
 
-    AsyncOperation _loadSceneOperator;
+    AsyncOperation _loadSceneOperation;
     bool _fadeOutFinished = true;
 
     void Awake()
@@ -55,8 +59,17 @@ public class GameManager : MonoBehaviour
     {
         _transitionAnimator = GetComponentInChildren<Animator>();
 
-        PlayerScript = FindObjectOfType<PlayerMovement>();
-        PlayerObject = PlayerScript.gameObject;
+        PlayerScript = FindObjectOfType<Player>();
+        if (PlayerScript != null)
+        {
+            PlayerObject = PlayerScript.gameObject;
+
+            PlayerScript.playerDied += OnPlayerDeath;
+        }
+        else
+        {
+            Debug.LogWarning("Object with Player Script wasn't found");
+        }
 
         sceneLoaded += OnSceneLoad;
         sceneEnded += OnSceneEnd;
@@ -64,7 +77,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(Utils.DoAfterAFrame(sceneLoaded.Invoke));
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (PlayerObject.transform.position.y < _fallHeight)
         {
@@ -103,7 +116,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    IEnumerator LoadScene(string sceneName)
+    public IEnumerator LoadScene(string sceneName)
     {
         sceneEnded?.Invoke();
 
@@ -112,9 +125,9 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
 
-        _loadSceneOperator = SceneManager.LoadSceneAsync(sceneName);
+        _loadSceneOperation = SceneManager.LoadSceneAsync(sceneName);
 
-        while (!_loadSceneOperator.isDone)
+        while (!_loadSceneOperation.isDone)
         {
             yield return null;
         }
@@ -141,21 +154,24 @@ public class GameManager : MonoBehaviour
             CheckpointPosition = Vector2.zero;
         }
 
-        DoorScript doorScript = FindObjectOfType<DoorScript>();
+        ExitScript exitScript = FindObjectOfType<ExitScript>();
 
-        if (doorScript != null)
+        if (exitScript != null)
         {
-            ExitPosition = doorScript.transform.position;
+            ExitPosition = exitScript.transform.position;
         }
         else
         {
-            Debug.LogWarning("DoorScript wasn't found");
+            Debug.LogWarning("Exit Script wasn't found");
             ExitPosition = Vector2.zero;
         }
 
-        _transitionAnimator.SetTrigger("FadeInTriggered");
+        if (_transitionAnimator != null)
+        {
+            _transitionAnimator.SetTrigger("FadeInTriggered");
+        }
 
-        StartCoroutine(PlayerScript.RespawnPlayerAtCheckpoint(0.2f));
+        StartCoroutine(SpawnPlayerAfterDelay(_playerSpawnDelay));
     }
 
     void OnSceneEnd()
@@ -170,10 +186,26 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(_delayBeforeFadeOut);
 
-        _transitionAnimator.SetTrigger("FadeOutTriggered");
+        if (_transitionAnimator != null)
+        {
+            _transitionAnimator.SetTrigger("FadeOutTriggered");
+        }
 
-        yield return new WaitForSeconds(_delayAfterFadeOutStarted);
+        yield return new WaitForSeconds(_delayAfterFadeOutTriggered);
 
         _fadeOutFinished = true;
+    }
+
+    void OnPlayerDeath()
+    {
+        StartCoroutine(SpawnPlayerAfterDelay(_playerRespawnDelay));
+    }
+
+    IEnumerator SpawnPlayerAfterDelay(float secondsDelay)
+    {
+        yield return new WaitForSeconds(secondsDelay);
+
+        PlayerObject.transform.position = CheckpointPosition;
+        PlayerScript.EnablePlayer();
     }
 }

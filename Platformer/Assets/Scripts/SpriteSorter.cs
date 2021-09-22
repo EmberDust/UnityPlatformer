@@ -1,23 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
 public class SpriteSorter : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Awake()
+    [SerializeField] bool _sortSprites = false;
+
+    void Update()
     {
-        var children = GetComponentsInChildren<Transform>();
-
-        Debug.Log($"Sorted sprites in {gameObject.name} based on Y coordinate, total children: " + children.Length);
-
-        foreach (var child in children)
+        if (_sortSprites)
         {
-            if (child.gameObject.TryGetComponent<SpriteRenderer>(out SpriteRenderer sprite))
+            var children = GetComponentsInChildren<Transform>();
+
+            foreach (var child in children)
             {
-                sprite.sortingOrder = (int)(-child.position.y * 10);
+                if (child.gameObject.TryGetComponent<SpriteRenderer>(out SpriteRenderer sprite))
+                {
+                    sprite.sortingOrder = (int)(-child.position.y * 10);
+                }
             }
+
+            Debug.Log($"Sorted sprites in {gameObject.name} based on Y coordinate, total children count: " + children.Length);
+            _sortSprites = false;
         }
     }
 }

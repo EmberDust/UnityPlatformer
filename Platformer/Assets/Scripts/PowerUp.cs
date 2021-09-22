@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class PowerUp : MonoBehaviour
@@ -13,7 +12,7 @@ public abstract class PowerUp : MonoBehaviour
     protected Vector2 _startingPosition;
     protected int _hashWasConsumed;
 
-    private void Start()
+    void Start()
     {
         _animator = GetComponent<Animator>();
 
@@ -22,7 +21,7 @@ public abstract class PowerUp : MonoBehaviour
         _startingPosition = transform.position;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject == GameManager.Instance.PlayerObject)
         {

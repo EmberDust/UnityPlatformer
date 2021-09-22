@@ -1,31 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Parallax : MonoBehaviour
 {
-    [SerializeField] float parallax = 0.5f;
-    [SerializeField] float verticalParallax = 0.1f;
+    [SerializeField] float _parallax = 0.5f;
+    [SerializeField] float _verticalParallax = 0.1f;
 
-    GameObject mainCamera;
+    GameObject _mainCamera;
 
-    Vector2 cameraOrigin;
-    Vector2 backgroundOrigin;
+    Vector2 _cameraOrigin;
+    Vector2 _backgroundOrigin;
 
     void Start()
     {
-        mainCamera = Camera.main.gameObject;
-        cameraOrigin = mainCamera.transform.position;
-        backgroundOrigin = transform.position;
+        _mainCamera = Camera.main.gameObject;
+        _cameraOrigin = _mainCamera.transform.position;
+        _backgroundOrigin = transform.position;
     }
 
     void Update()
     {
-        Vector2 cameraPosition = mainCamera.transform.position;
+        Vector2 cameraPosition = _mainCamera.transform.position;
 
-        Vector2 newSkyPosition = new Vector2 (backgroundOrigin.x + (cameraPosition.x - cameraOrigin.x) * parallax,
-                                              backgroundOrigin.y + (cameraPosition.y - cameraOrigin.y) * verticalParallax);
+        Vector2 newBackgroundPosition = new Vector2 (_backgroundOrigin.x + (cameraPosition.x - _cameraOrigin.x) * _parallax,
+                                                     _backgroundOrigin.y + (cameraPosition.y - _cameraOrigin.y) * _verticalParallax);
 
-        transform.position = newSkyPosition;
+        transform.position = newBackgroundPosition;
     }
 }

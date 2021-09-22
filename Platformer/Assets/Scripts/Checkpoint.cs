@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 
@@ -27,9 +25,7 @@ public class Checkpoint : MonoBehaviour
     {
         _activationLight = GetComponentInChildren<Light2D>();
 
-        if (_activationLight != null) {
-            _activationLight.gameObject.SetActive(false);
-        }
+        IsActive = false;
     }
 
     void OnTriggerEnter2D(Collider2D collision)

@@ -1,21 +1,20 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerInputs : MonoBehaviour
 {
     [SerializeField] float _inputBufferTime = 0.1f;
 
-    float _timeJumpWasPressed = -1.0f;  // to buffer the jump input - resets to -1 after consumption
-
     public float HorizontalInput { get; private set; }
     public bool JumpInput { get => _timeJumpWasPressed + _inputBufferTime > Time.time; }
     public bool JumpPressed { get; private set; }
     public bool WallGrabPressed { get; private set; }
 
+    float _timeJumpWasPressed = -1.0f;
+
     void Update()
     {
         HorizontalInput = Input.GetAxisRaw("Horizontal");
+
         JumpPressed = Input.GetButton("Jump");
         WallGrabPressed = Input.GetButton("WallGrab");
 

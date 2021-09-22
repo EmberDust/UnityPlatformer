@@ -22,7 +22,7 @@ public class PlayerVisuals : MonoBehaviour
     ParticleSystem _rightWalljumpParticles = null;
 
     Rigidbody2D _rb;
-    PlayerMovement _player;
+    Player _player;
 
     SpriteRenderer _sprite;
     Animator _anim;
@@ -41,18 +41,19 @@ public class PlayerVisuals : MonoBehaviour
         _anim = GetComponent<Animator>();
 
         _hashHorizontalVelocity = Animator.StringToHash("horizontalVelocity");
+        
         _hashIsFalling = Animator.StringToHash("isFalling");
         _hashIsJumping = Animator.StringToHash("isJumping");
-        _hashIsDead = Animator.StringToHash("isDead");
+        _hashIsDead    = Animator.StringToHash("isDead");
 
         CreateMirroredWalljumpParticles();
 
-        _player = GetComponent<PlayerMovement>();
+        _player = GetComponent<Player>();
 
-        _player.playerWalljumped += EmitWalljumpParticles;
+        _player.playerWalljumped   += EmitWalljumpParticles;
         _player.playerGroundjumped += EmitJumpingParticles;
-        _player.playerMultijumped += EmitMultijumpParticles;
-        _player.playerDied += EmitDeathParticles;
+        _player.playerMultijumped  += EmitMultijumpParticles;
+        _player.playerDied         += EmitDeathParticles;
     }
 
     void Update()
@@ -121,7 +122,7 @@ public class PlayerVisuals : MonoBehaviour
     {
         if (_wallHangParticles != null)
         {
-            if (_player.IsWallSliding && _player.Falling && !_player.IsDisabled)
+            if (_player.IsWallSliding && _player.IsFalling && !_player.IsDisabled)
             {
                 if (!_wallHangParticles.isEmitting)
                 {
@@ -183,8 +184,8 @@ public class PlayerVisuals : MonoBehaviour
     void UpdateAnimator()
     {
         _anim.SetFloat(_hashHorizontalVelocity, Mathf.Abs(_rb.velocity.x));
-        _anim.SetBool(_hashIsFalling, _player.Falling);
-        _anim.SetBool(_hashIsJumping, _player.Jumping);
+        _anim.SetBool(_hashIsFalling, _player.IsFalling);
+        _anim.SetBool(_hashIsJumping, _player.IsJumping);
         _anim.SetBool(_hashIsDead, _player.IsDisabled);
     }
 }

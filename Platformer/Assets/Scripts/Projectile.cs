@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpikeProjectile : MonoBehaviour
+public class Projectile : MonoBehaviour
 {
     [SerializeField] float _lifeTime = 3.0f;
     [SerializeField] float _velocity = 1.0f;
     [SerializeField] float _delayAfterCollision = 0.5f;
 
-    public Action<SpikeProjectile> projectileCollided;
-    public Action<SpikeProjectile> projectileExpired;
+    public Action<Projectile> projectileCollided;
+    public Action<Projectile> projectileExpired;
 
     public float TimeSpawned { get; private set; }
     public bool ReadyToBeReturned { get; private set; }

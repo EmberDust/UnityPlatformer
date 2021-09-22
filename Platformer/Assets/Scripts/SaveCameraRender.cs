@@ -7,22 +7,20 @@ public class SaveCameraRender : MonoBehaviour
 {
     Camera renderCamera;
 
-    // Start is called before the first frame update
     void Start()
     {
         renderCamera = GetComponent<Camera>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetButtonDown("Screenshot"))
         {
-            SaveScreen();
+            ScreenshotToFile();
         }
     }
 
-    void SaveScreen()
+    void ScreenshotToFile()
     {
         RenderTexture currentRT = RenderTexture.active;
         RenderTexture.active = renderCamera.targetTexture;

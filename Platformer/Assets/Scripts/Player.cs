@@ -4,34 +4,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class Player : MonoBehaviour
 {
     // Singleton
-    static PlayerMovement Instance { get; set; }
+    static Player Instance { get; set; }
 
     [SerializeField]float _timeScale = 1.0f;
 
     [Space]
     [Header("Horizontal Movement Values")]
-    [SerializeField] float _baseDeceleration = 0.75f;
+    [SerializeField] float _baseDeceleration = 1.0f;
     [SerializeField] float _baseAcceleration = 1.5f;
-    [SerializeField] float _thresholdVelocity = 4.0f;
-    [SerializeField] float _thresholdDeceleration = 0.75f;
+    [SerializeField] float _thresholdVelocity = 3.25f;
+    [SerializeField] float _thresholdDeceleration = 0.505f;
 
     [Header("Jump")]
     [SerializeField] int   _additionalJumps =  1;
-    [SerializeField] float _jumpSpeed = 5f;
+    [SerializeField] float _jumpSpeed = 4f;
     [SerializeField] float _fallingVelocityLimit = -7f;
 
     [Header("Walljump")]
-    [SerializeField] int _walljumpAccelerationFrames = 5;
+    [SerializeField] int _walljumpAccelerationFrames = 7;
     [SerializeField] float _walljumpAcceleration = 2.0f;
 
     [Header("Gravity Scales")]
-    [SerializeField] float _baseGravityScale        = 2f;
-    [SerializeField] float _ascendingGravityScale   = 1f;
-    [SerializeField] float _fallingGravityScale     = 3f;
-    [SerializeField] float _wallSlideGravityScale = 0.2f;
+    [SerializeField] float _baseGravityScale        = 2.75f;
+    [SerializeField] float _ascendingGravityScale   = 0.66f;
+    [SerializeField] float _fallingGravityScale     = 2.75f;
+    [SerializeField] float _wallSlideGravityScale   = 0.15f;
 
     [Space]
     [Header("Ground Check")]
@@ -52,8 +52,8 @@ public class PlayerMovement : MonoBehaviour
     public event Action playerDied;
 
     public bool Grounded      { get; private set; }
-    public bool Jumping       { get; private set; }
-    public bool Falling       { get; private set; }
+    public bool IsJumping     { get; private set; }
+    public bool IsFalling     { get; private set; }
     public bool IsWallSliding { get; private set; }
     public bool IsDisabled    { get; private set; }
 
@@ -83,7 +83,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Awake()
     {
-        if (PlayerMovement.Instance != null)
+        if (Player.Instance != null)
         {
             Destroy(gameObject);
         }
@@ -115,6 +115,8 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        _debugString.Clear();
+
         Time.timeScale = _timeScale;
 
         if (!IsDisabled)
@@ -128,7 +130,7 @@ public class PlayerMovement : MonoBehaviour
             WallCheck();
             WallSlideCheck();
 
-            // Physics, depending on state and inputs
+            // Movement, depending on state and inputs
             HandleHorizontalAcceleration();
             HandleVerticalMovement();
             UpdateGravityScales();
@@ -140,6 +142,9 @@ public class PlayerMovement : MonoBehaviour
             float clampedVerticalVelocity = Mathf.Max(_rb.velocity.y, _fallingVelocityLimit);
             _rb.velocity = new Vector2(_rb.velocity.x, clampedVerticalVelocity);
         }
+
+        _debugString.AppendLine(_rb.velocity.x.ToString());
+        GlobalText.Instance.Show(_debugString.ToString());
     }
 
     public void DisablePlayer()
@@ -180,22 +185,10 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!IsDisabled)
         {
-            playerDied?.Invoke();
-
             DisablePlayer();
 
-            StartCoroutine(RespawnPlayerAtCheckpoint(1f));
+            playerDied?.Invoke();
         }
-    }
-
-    public IEnumerator RespawnPlayerAtCheckpoint(float secondsDelay = 0f)
-    {
-        yield return new WaitForSeconds(secondsDelay);
-
-        _rb.velocity = Vector2.zero;
-        transform.position = GameManager.Instance.CheckpointPosition;
-
-        EnablePlayer();
     }
 
     public void GiveVelocityBoost(Vector2 boostAmount, bool resetGravity = false)
@@ -271,7 +264,7 @@ public class PlayerMovement : MonoBehaviour
         float newVerticalVelocity = _rb.velocity.y;
 
         // Brake the fall speed on wall slide
-        if (IsWallSliding && Falling && !_wallSlideStoppedFall)
+        if (IsWallSliding && IsFalling && !_wallSlideStoppedFall)
         {
             newVerticalVelocity = 0.0f;
             _wallSlideStoppedFall = true;
@@ -284,29 +277,27 @@ public class PlayerMovement : MonoBehaviour
 
         bool jumpPossible = groundjumpPossible || walljumpPossible || multijumpPossible;
 
-        //bool jumpInput = _inputs.ConsumeJumpInput();
-
         if (_inputs.JumpInput && jumpPossible)
         {
             _inputs.ConsumeJumpInput();
 
-            // Regular jump from ground here
             if (groundjumpPossible)
             {
+                // Regular jump from ground here
                 playerGroundjumped?.Invoke();
             }
             else
             {
-                // Wall jump here
                 if (walljumpPossible && _inputs.WallGrabPressed)
                 {
+                    // Wall jump here
                     _walljumpFrame = 0;
 
                     playerWalljumped?.Invoke(_wallDirection, _touchedWallPosition);
                 }
-                // Multi jump here
                 else
                 {
+                    // Multi jump here
                     _jumpsLeft--;
 
                     playerMultijumped?.Invoke();
@@ -327,18 +318,22 @@ public class PlayerMovement : MonoBehaviour
         // State machine at home:
 
         // Changing gravity scale for better game feel
-        if (Jumping)
+        if (IsJumping)
         {
-            // If player holds jump button - increase jump height
+            // Increase jump height by reducing the gravity
             if (_inputs.JumpPressed)
+            {
                 _rb.gravityScale = _ascendingGravityScale;
+            }
         }
         else if (IsWallSliding)
         {
+            // Reduce fall acceleration during wall slide
             _rb.gravityScale = _wallSlideGravityScale;
         }
-        else if (Falling)
+        else if (IsFalling)
         {
+            // Increase fall acceleration during free fall to remove floatiness
             _rb.gravityScale = _fallingGravityScale;
         }
     }
@@ -379,9 +374,9 @@ public class PlayerMovement : MonoBehaviour
 
     void WallSlideCheck()
     {
-        bool suitableForWallSlide = _isTouchingWall && !Grounded;
+        bool satisfyWallSlideConditions = _isTouchingWall && !Grounded;
 
-        if (suitableForWallSlide && _inputs.WallGrabPressed)
+        if (satisfyWallSlideConditions && _inputs.WallGrabPressed)
         {
             IsWallSliding = true;
         }
@@ -394,17 +389,16 @@ public class PlayerMovement : MonoBehaviour
 
     void UpdateFallingState()
     {
-        Jumping = false;
-        Falling = false;
+        IsJumping = false;
+        IsFalling = false;
 
         if (_rb.velocity.y > 0.005f)
         {
-            Jumping = true;
+            IsJumping = true;
         }
-
-        if (_rb.velocity.y < -0.005f)
+        else if (_rb.velocity.y < -0.005f)
         {
-            Falling = true;
+            IsFalling = true;
         }
     }
 

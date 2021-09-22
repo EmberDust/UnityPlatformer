@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 595268743}
   - component: {fileID: 595268745}
   - component: {fileID: 595268744}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Walljump Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4875,7 +4875,7 @@ GameObject:
   - component: {fileID: 600919130}
   - component: {fileID: 600919129}
   - component: {fileID: 600919128}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Running Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9662,7 +9662,7 @@ GameObject:
   - component: {fileID: 751759890}
   - component: {fileID: 751759892}
   - component: {fileID: 751759891}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Jumping Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14526,7 +14526,7 @@ GameObject:
   - component: {fileID: 1478986518}
   - component: {fileID: 1478986520}
   - component: {fileID: 1478986519}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Death Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19390,7 +19390,7 @@ GameObject:
   - component: {fileID: 1990032879}
   - component: {fileID: 1990032881}
   - component: {fileID: 1990032880}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Wallhang Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24175,7 +24175,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2014453868632953729}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ground Check
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24207,7 +24207,7 @@ GameObject:
   - component: {fileID: 4484280366513963615}
   - component: {fileID: 6556809107142993357}
   - component: {fileID: 6916294436173577407}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Multijump Particles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29069,7 +29069,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3925145802629726446}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Particle Systems
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29109,11 +29109,11 @@ GameObject:
   - component: {fileID: 7945967496813168229}
   - component: {fileID: 7945967496813168228}
   - component: {fileID: 2204184795717809600}
-  - component: {fileID: 7945967496813168231}
+  - component: {fileID: 7919087380779501124}
   - component: {fileID: 1227212753}
   - component: {fileID: 728836082}
   - component: {fileID: 104098792}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29220,7 +29220,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &7945967496813168231
+--- !u!114 &7919087380779501124
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -29229,7 +29229,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7945967496813168226}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1dfa21f06c59cf747b33028247e8d193, type: 3}
+  m_Script: {fileID: 11500000, guid: 7214b99a2c64df14d8ad7b366cc2a929, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _timeScale: 1
@@ -29245,7 +29245,7 @@ MonoBehaviour:
   _baseGravityScale: 2.75
   _ascendingGravityScale: 0.66
   _fallingGravityScale: 2.75
-  _wallSlideGravityScale: 0.2
+  _wallSlideGravityScale: 0.15
   _groundCheckPoint: {fileID: 2014453868632953729}
   _coyoteTime: 0.1
   _groundMask:
@@ -29300,9 +29300,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bee27f5d54d24f489a41285b8fe350f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerPathFile: {fileID: 11400000, guid: 964649c8356ae1b418be62264336ac6a, type: 2}
+  _playerPathFile: {fileID: 11400000, guid: 6702e1d331adc174795fcad285a2c6a7, type: 2}
   _framesBetweenSaves: 3
-  _pauseTracker: 1
+  _pauseTracker: 0
   _overwriteCurrentPath: 1
 --- !u!1 &7945967496979675913
 GameObject:
@@ -29314,7 +29314,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7945967496979675914}
   - component: {fileID: 7945967496979675915}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29395,7 +29395,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6058625182864201881}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Wall Check
   m_TagString: Untagged
   m_Icon: {fileID: 0}
