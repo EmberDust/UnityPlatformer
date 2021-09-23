@@ -365,7 +365,7 @@ Camera:
   far clip plane: 1000.19
   field of view: 60
   orthographic: 1
-  orthographic size: 3.5
+  orthographic size: 3.25
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -389,7 +389,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.00000023841858, y: 0.3690006, z: -10}
+  m_LocalPosition: {x: -0.00000011920929, y: 0.34400052, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3213,7 +3213,7 @@ PrefabInstance:
     - target: {fileID: 6609552113445904526, guid: 7fcea236fe2ee024d875b4cd64566944, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[27].m_Data
       value: 
-      objectReference: {fileID: 21300084, guid: 261212b977f594d5dbc48631a5c1295c, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 6609552113445904526, guid: 7fcea236fe2ee024d875b4cd64566944, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[28].m_Data
       value: 
@@ -3225,7 +3225,7 @@ PrefabInstance:
     - target: {fileID: 6609552113445904526, guid: 7fcea236fe2ee024d875b4cd64566944, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[30].m_Data
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 21300084, guid: 261212b977f594d5dbc48631a5c1295c, type: 3}
     - target: {fileID: 6609552113445904526, guid: 7fcea236fe2ee024d875b4cd64566944, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[31].m_Data
       value: 
@@ -3492,7 +3492,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6609552113445904526, guid: 7fcea236fe2ee024d875b4cd64566944, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[27].m_RefCount
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6609552113445904526, guid: 7fcea236fe2ee024d875b4cd64566944, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[28].m_RefCount
@@ -3504,7 +3504,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6609552113445904526, guid: 7fcea236fe2ee024d875b4cd64566944, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[30].m_RefCount
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6609552113445904526, guid: 7fcea236fe2ee024d875b4cd64566944, type: 3}
       propertyPath: m_TileSpriteArray.Array.data[31].m_RefCount
@@ -3916,7 +3916,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6609552113445904526, guid: 7fcea236fe2ee024d875b4cd64566944, type: 3}
       propertyPath: m_Tiles.Array.data[48].second.m_TileSpriteIndex
-      value: 27
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 6609552113445904526, guid: 7fcea236fe2ee024d875b4cd64566944, type: 3}
       propertyPath: m_Tiles.Array.data[49].second.m_TileSpriteIndex
@@ -4511,6 +4511,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 166913467, guid: f62494c348c60f24a936f090752f72c7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8393572812134638844, guid: f62494c348c60f24a936f090752f72c7, type: 3}
       propertyPath: m_RootOrder
       value: 10
@@ -4705,6 +4709,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Global Light 2D
       objectReference: {fileID: 0}
+    - target: {fileID: 1149109527437608491, guid: 61a651f3a4e2ff0408df0cadfd8d4ece, type: 3}
+      propertyPath: m_Intensity
+      value: 0.8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 61a651f3a4e2ff0408df0cadfd8d4ece, type: 3}
 --- !u!1001 &1822547127141746984
@@ -4776,6 +4784,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5170490387828682975, guid: a3f13c25e3158394c9c2d9f59774a9cf, type: 3}
+      propertyPath: m_ShadowIntensity
+      value: 0.75
+      objectReference: {fileID: 0}
     - target: {fileID: 5170490389458212008, guid: a3f13c25e3158394c9c2d9f59774a9cf, type: 3}
       propertyPath: m_Name
       value: Exit Door
@@ -4839,11 +4851,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5719072624826406024, guid: bf507d51e1419e44d91dccc171bd4609, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.00000023841858
+      value: -0.00000011920929
       objectReference: {fileID: 0}
     - target: {fileID: 5719072624826406024, guid: bf507d51e1419e44d91dccc171bd4609, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.3690006
+      value: 0.34400052
       objectReference: {fileID: 0}
     - target: {fileID: 5719072624826406024, guid: bf507d51e1419e44d91dccc171bd4609, type: 3}
       propertyPath: m_LocalPosition.z
