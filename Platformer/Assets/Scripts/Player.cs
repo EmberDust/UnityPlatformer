@@ -9,9 +9,15 @@ public class Player : MonoBehaviour
     // Singleton
     static Player Instance { get; set; }
 
+    #region Serialized Fields
     [SerializeField]float _timeScale = 1.0f;
 
     [Space]
+    [Header("Dash")]
+    [SerializeField] float _dashVelocity = 2.0f;
+    [SerializeField] AnimationCurve _dashHorizontalVelocity;
+    [SerializeField] AnimationCurve _dashVerticalVelocity;
+
     [Header("Horizontal Movement Values")]
     [SerializeField] float _baseDeceleration = 1.0f;
     [SerializeField] float _baseAcceleration = 1.5f;
@@ -43,7 +49,9 @@ public class Player : MonoBehaviour
     [Header("Wall Check")]
     [SerializeField] Transform _wallCheckPoint;
     [SerializeField] LayerMask _wallMask;
+    #endregion
 
+    #region Public Properties\Events
     public event Action<int, Vector2> playerWalljumped;
     public event Action playerGroundjumped;
     public event Action playerMultijumped;
@@ -56,8 +64,10 @@ public class Player : MonoBehaviour
     public bool IsFalling     { get; private set; }
     public bool IsWallSliding { get; private set; }
     public bool IsDisabled    { get; private set; }
+    #endregion
 
-    // Player state
+    #region Local Variables
+    // Player State
     Vector2 _velocityChange;
 
     int _facingDirection = 1;
@@ -66,21 +76,20 @@ public class Player : MonoBehaviour
     float _timeLastGrounded = -10.0f;
     int _walljumpFrame = 0;
 
-    // Wall slide values
+    // Wall Slide Values
     Vector2 _touchedWallPosition = new Vector2(0f, 0f);
     bool _isTouchingWall = false;
     int _wallDirection = 0; 
 
     bool _wallSlideStoppedFall = false;
 
-    // Cached components
+    // Cached Components
     PlayerInputs _inputs;
     Rigidbody2D _rb;
     List<Collider2D> _colliders;
+    #endregion
 
-    // DEBUG VALUES
-    System.Text.StringBuilder _debugString = new System.Text.StringBuilder();
-
+    #region Unity Callbacks
     void Awake()
     {
         if (Player.Instance != null)
@@ -111,12 +120,12 @@ public class Player : MonoBehaviour
         {
             FaceMovementDirection();
         }
+
+        GlobalText.Instance.AppendText($"horizontal velocity: {_rb.velocity.x}");
     }
 
     void FixedUpdate()
     {
-        _debugString.Clear();
-
         Time.timeScale = _timeScale;
 
         if (!IsDisabled)
@@ -133,6 +142,7 @@ public class Player : MonoBehaviour
             // Movement, depending on state and inputs
             HandleHorizontalAcceleration();
             HandleVerticalMovement();
+            HandleDashing();
             UpdateGravityScales();
 
             // Apply velocity changes
@@ -142,11 +152,11 @@ public class Player : MonoBehaviour
             float clampedVerticalVelocity = Mathf.Max(_rb.velocity.y, _fallingVelocityLimit);
             _rb.velocity = new Vector2(_rb.velocity.x, clampedVerticalVelocity);
         }
-
-        _debugString.AppendLine(_rb.velocity.x.ToString());
-        GlobalText.Instance.Show(_debugString.ToString());
     }
+    #endregion
 
+// Public Regions
+    #region Player Activation
     public void DisablePlayer()
     {
         if (!IsDisabled)
@@ -190,19 +200,16 @@ public class Player : MonoBehaviour
             playerDied?.Invoke();
         }
     }
+#endregion
 
-    public void GiveVelocityBoost(Vector2 boostAmount, bool resetGravity = false)
+    #region Give Boosts
+    public void GiveVelocityBoost(Vector2 boostAmount, bool overrideVertical = false)
     {
         // Horizontal boost applied in the direction of current horizontal velocity
-        Vector2 newVelocity = new Vector2(_rb.velocity.x + Mathf.Sign(_rb.velocity.x) * boostAmount.x,
-                                          _rb.velocity.y + boostAmount.y);
+        float newHorizontalVelocity = _rb.velocity.x + Mathf.Sign(_rb.velocity.x) * Mathf.Abs(boostAmount.x);
+        float newVerticalVelocity = overrideVertical ? boostAmount.y : _rb.velocity.y + boostAmount.y;
 
-        if (resetGravity)
-        {
-            newVelocity.y = Mathf.Max(newVelocity.y, boostAmount.y);
-        }
-
-        _rb.velocity = newVelocity;
+        _rb.velocity = new Vector2(newHorizontalVelocity, newVerticalVelocity);
     }
 
     public void GiveMultijumpCharges(int multijumpCharges, bool ignoreLimit = false)
@@ -216,7 +223,10 @@ public class Player : MonoBehaviour
             _jumpsLeft = Mathf.Min(_additionalJumps, _jumpsLeft + multijumpCharges);
         }
     }
+    #endregion
 
+//Private Regions
+    #region Player Movement
     void HandleHorizontalAcceleration()
     {
         float horizontalVelocity = _rb.velocity.x;
@@ -312,6 +322,24 @@ public class Player : MonoBehaviour
         _rb.velocity = new Vector2(_rb.velocity.x, newVerticalVelocity);
     }
 
+    void HandleDashing()
+    {
+        if (_inputs.DashInput)
+        {
+            if (DashPoint.ClosestInRange != null)
+            {
+                _inputs.ConsumeDashInput();
+
+                Vector2 directionToPoint = DashPoint.ClosestInRange.transform.position - transform.position;
+                directionToPoint.Normalize();
+
+                GiveVelocityBoost(directionToPoint * _dashVelocity, true);
+            }
+        }
+    }
+    #endregion
+
+    #region Player State
     void UpdateGravityScales()
     {
         // -Can we have a state machine? -We have a state machine at home
@@ -419,4 +447,5 @@ public class Player : MonoBehaviour
             }
         }
     }
+    #endregion
 }

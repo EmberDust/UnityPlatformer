@@ -14,7 +14,7 @@ public class CompositeShadowCasterGenerator : MonoBehaviour
     [SerializeField] Vector2 _shadowOffset = Vector2.zero;
 
     [Space]
-    [SerializeField] bool _saveColliderShapes;
+    [SerializeField] bool _getColliderShapes;
     [SerializeField] bool _visualizeColliderShapes;
     [SerializeField] bool _createShadowCasters;
     [SerializeField] bool _destroyChildShadowCasters;
@@ -31,7 +31,7 @@ public class CompositeShadowCasterGenerator : MonoBehaviour
 
     private void Start()
     {
-        _saveColliderShapes = false;
+        _getColliderShapes = false;
         _visualizeColliderShapes = false;
         _createShadowCasters = false;
         _destroyChildShadowCasters = false;
@@ -39,10 +39,10 @@ public class CompositeShadowCasterGenerator : MonoBehaviour
 
     void Update()
     {
-        if (_saveColliderShapes)
+        if (_getColliderShapes)
         {
             SaveColliderShapes();
-            _saveColliderShapes = false;
+            _getColliderShapes = false;
         }
 
         if (_visualizeColliderShapes)
