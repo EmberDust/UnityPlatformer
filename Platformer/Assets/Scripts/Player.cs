@@ -14,30 +14,34 @@ public class Player : MonoBehaviour
 
     [Space]
     [Header("Dash")]
-    [SerializeField] float _dashVelocity = 2.0f;
-    [SerializeField] AnimationCurve _dashHorizontalVelocity;
-    [SerializeField] AnimationCurve _dashVerticalVelocity;
+    [SerializeField] float _dashHorizontalMulti = 0.25f;
+    [SerializeField] float _dashVerticalMulti   = 0.90f;
+    [SerializeField] AnimationCurve _dashVelocityCurve;
 
     [Header("Horizontal Movement Values")]
-    [SerializeField] float _baseDeceleration = 1.0f;
-    [SerializeField] float _baseAcceleration = 1.5f;
-    [SerializeField] float _thresholdVelocity = 3.25f;
+    [SerializeField] float _baseDeceleration      = 1.0f;
+    [SerializeField] float _baseAcceleration      = 1.5f;
+    [SerializeField] float _thresholdVelocity     = 3.25f;
     [SerializeField] float _thresholdDeceleration = 0.505f;
 
     [Header("Jump")]
     [SerializeField] int   _additionalJumps =  1;
     [SerializeField] float _jumpSpeed = 4f;
-    [SerializeField] float _fallingVelocityLimit = -7f;
 
     [Header("Walljump")]
     [SerializeField] int _walljumpAccelerationFrames = 7;
     [SerializeField] float _walljumpAcceleration = 2.0f;
 
     [Header("Gravity Scales")]
-    [SerializeField] float _baseGravityScale        = 2.75f;
-    [SerializeField] float _ascendingGravityScale   = 0.66f;
-    [SerializeField] float _fallingGravityScale     = 2.75f;
-    [SerializeField] float _wallSlideGravityScale   = 0.15f;
+    [SerializeField] float _baseGravityScale      = 2.75f;
+    [SerializeField] float _ascendingGravityScale = 0.66f;
+    [SerializeField] float _fallingGravityScale   = 2.75f;
+    [SerializeField] float _wallSlideGravityScale = 0.15f;
+
+    [Header("Clamp Velocity")]
+    [SerializeField] float _maximumHorizontalVelocity = 10.0f;
+    [SerializeField] float _maximumVerticalVelocity   =  6.0f;
+    [SerializeField] float _minimumVerticalVelocity   = -7.0f;
 
     [Space]
     [Header("Ground Check")]
@@ -64,6 +68,9 @@ public class Player : MonoBehaviour
     public bool IsFalling     { get; private set; }
     public bool IsWallSliding { get; private set; }
     public bool IsDisabled    { get; private set; }
+
+    /// <summary>Is character movement is controled by AnimationCurve</summary>
+    public bool IsMovementOverridenByCurve { get => _currentCurve != null && _timeOnCurve < _currentCurve.keys.Last().time; }
     #endregion
 
     #region Local Variables
@@ -82,6 +89,11 @@ public class Player : MonoBehaviour
     int _wallDirection = 0; 
 
     bool _wallSlideStoppedFall = false;
+
+    // Velocity over curve
+    AnimationCurve _currentCurve;
+    Vector2 _curveVelocityMultiplier;
+    float _timeOnCurve;
 
     // Cached Components
     PlayerInputs _inputs;
@@ -109,6 +121,8 @@ public class Player : MonoBehaviour
 
         _colliders = GetComponents<Collider2D>().ToList();
 
+        Time.timeScale = _timeScale;
+
         DontDestroyOnLoad(gameObject);
 
         DisablePlayer();
@@ -121,13 +135,11 @@ public class Player : MonoBehaviour
             FaceMovementDirection();
         }
 
-        GlobalText.Instance.AppendText($"horizontal velocity: {_rb.velocity.x}");
+        GlobalText.Instance.AppendText($"Player velocity: {_rb.velocity}");
     }
 
     void FixedUpdate()
     {
-        Time.timeScale = _timeScale;
-
         if (!IsDisabled)
         {
             _rb.gravityScale = _baseGravityScale;
@@ -140,17 +152,22 @@ public class Player : MonoBehaviour
             WallSlideCheck();
 
             // Movement, depending on state and inputs
-            HandleHorizontalAcceleration();
-            HandleVerticalMovement();
-            HandleDashing();
-            UpdateGravityScales();
+            if (IsMovementOverridenByCurve)
+            {
+                ChangeVelocityByCurve();
+            }
+            else
+            {
+                // Regular movement
+                HandleHorizontalAcceleration();
+                HandleVerticalMovement();
+                HandleDashing();
+                UpdateGravityScales();
+            }
 
-            // Apply velocity changes
             _rb.velocity += _velocityChange;
 
-            // Clamp velocity values (for now only falling velocity)
-            float clampedVerticalVelocity = Mathf.Max(_rb.velocity.y, _fallingVelocityLimit);
-            _rb.velocity = new Vector2(_rb.velocity.x, clampedVerticalVelocity);
+            ClampVelocity();
         }
     }
     #endregion
@@ -241,6 +258,8 @@ public class Player : MonoBehaviour
 
         bool isDuringWallJump = _walljumpFrame < _walljumpAccelerationFrames;
 
+        // If acceleration overriden by a curve
+
         if (!isDuringWallJump)
         {
             // Regular acceleration, if player is not wall sliding
@@ -293,21 +312,18 @@ public class Player : MonoBehaviour
 
             if (groundjumpPossible)
             {
-                // Regular jump from ground here
                 playerGroundjumped?.Invoke();
             }
             else
             {
                 if (walljumpPossible && _inputs.WallGrabPressed)
                 {
-                    // Wall jump here
                     _walljumpFrame = 0;
 
                     playerWalljumped?.Invoke(_wallDirection, _touchedWallPosition);
                 }
                 else
                 {
-                    // Multi jump here
                     _jumpsLeft--;
 
                     playerMultijumped?.Invoke();
@@ -322,6 +338,12 @@ public class Player : MonoBehaviour
         _rb.velocity = new Vector2(_rb.velocity.x, newVerticalVelocity);
     }
 
+    void ChangeVelocityByCurve()
+    {
+        _velocityChange += _curveVelocityMultiplier * _currentCurve.Evaluate(_timeOnCurve);
+        _timeOnCurve += 1.0f;
+    }
+
     void HandleDashing()
     {
         if (_inputs.DashInput)
@@ -330,12 +352,30 @@ public class Player : MonoBehaviour
             {
                 _inputs.ConsumeDashInput();
 
-                Vector2 directionToPoint = DashPoint.ClosestInRange.transform.position - transform.position;
-                directionToPoint.Normalize();
+                Vector2 dashPoint = DashPoint.ClosestInRange.transform.position;
+                // To make dash more consistent - limit number of possible dash directions
+                Vector2 dashDirection = new Vector2(Mathf.Sign(dashPoint.x - transform.position.x),
+                                                    Mathf.Sign(dashPoint.y - transform.position.y));
+                dashDirection.Normalize();
 
-                GiveVelocityBoost(directionToPoint * _dashVelocity, true);
+                _currentCurve = _dashVelocityCurve;
+
+                _curveVelocityMultiplier = new Vector2(dashDirection.x * _dashHorizontalMulti,
+                                                       dashDirection.y * _dashVerticalMulti);
+
+                _timeOnCurve = 0.0f;
+
+                // Dash resets vertical velocity
+                _rb.velocity = new Vector2(_rb.velocity.x, 0.0f);
             }
         }
+    }
+
+    void ClampVelocity()
+    {
+        float clampedHorizontalVelocity = Mathf.Clamp(_rb.velocity.x, -_maximumHorizontalVelocity, _maximumHorizontalVelocity);
+        float clampedVerticalVelocity = Mathf.Clamp(_rb.velocity.y, _minimumVerticalVelocity, _maximumVerticalVelocity);
+        _rb.velocity = new Vector2(clampedHorizontalVelocity, clampedVerticalVelocity);
     }
     #endregion
 
@@ -349,7 +389,7 @@ public class Player : MonoBehaviour
         if (IsJumping)
         {
             // Increase jump height by reducing the gravity
-            if (_inputs.JumpPressed)
+            if (_inputs.JumpPressed || _inputs.DashPressed)
             {
                 _rb.gravityScale = _ascendingGravityScale;
             }
