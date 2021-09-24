@@ -13,11 +13,6 @@ public class Player : MonoBehaviour
     [SerializeField]float _timeScale = 1.0f;
 
     [Space]
-    [Header("Dash")]
-    [SerializeField] float _dashHorizontalMulti = 0.25f;
-    [SerializeField] float _dashVerticalMulti   = 0.90f;
-    [SerializeField] AnimationCurve _dashVelocityCurve;
-
     [Header("Horizontal Movement Values")]
     [SerializeField] float _baseDeceleration      = 1.0f;
     [SerializeField] float _baseAcceleration      = 1.5f;
@@ -28,9 +23,13 @@ public class Player : MonoBehaviour
     [SerializeField] int   _additionalJumps =  1;
     [SerializeField] float _jumpSpeed = 4f;
 
+    [Header("Dash")]
+    [SerializeField] Vector2 _dashVelocityMultipliers = new Vector2(0.25f, 0.90f);
+    [SerializeField] AnimationCurve _dashVelocityCurve;
+
     [Header("Walljump")]
-    [SerializeField] int _walljumpAccelerationFrames = 7;
-    [SerializeField] float _walljumpAcceleration = 2.0f;
+    [SerializeField] Vector2 _walljumpVelocityMultipliers = new Vector2(1.0f, 1.0f);
+    [SerializeField] AnimationCurve _walljumpVelocityCurve;
 
     [Header("Gravity Scales")]
     [SerializeField] float _baseGravityScale      = 2.75f;
@@ -43,13 +42,11 @@ public class Player : MonoBehaviour
     [SerializeField] float _maximumVerticalVelocity   =  6.0f;
     [SerializeField] float _minimumVerticalVelocity   = -7.0f;
 
-    [Space]
     [Header("Ground Check")]
     [SerializeField] Transform _groundCheckPoint;
     [SerializeField] float _coyoteTime = 0.1f;
     [SerializeField] LayerMask _groundMask;
 
-    [Space]
     [Header("Wall Check")]
     [SerializeField] Transform _wallCheckPoint;
     [SerializeField] LayerMask _wallMask;
@@ -69,7 +66,7 @@ public class Player : MonoBehaviour
     public bool IsWallSliding { get; private set; }
     public bool IsDisabled    { get; private set; }
 
-    /// <summary>Is character movement is controled by AnimationCurve</summary>
+    ///<summary>Is character movement is controled by AnimationCurve</summary>
     public bool IsMovementOverridenByCurve { get => _currentCurve != null && _timeOnCurve < _currentCurve.keys.Last().time; }
     #endregion
 
@@ -81,7 +78,6 @@ public class Player : MonoBehaviour
     int _jumpsLeft = 0;
 
     float _timeLastGrounded = -10.0f;
-    int _walljumpFrame = 0;
 
     // Wall Slide Values
     Vector2 _touchedWallPosition = new Vector2(0f, 0f);
@@ -90,9 +86,9 @@ public class Player : MonoBehaviour
 
     bool _wallSlideStoppedFall = false;
 
-    // Velocity over curve
+    // Values Used If Movement Controlled By Curve
     AnimationCurve _currentCurve;
-    Vector2 _curveVelocityMultiplier;
+    Vector2 _curveVelocityVector;
     float _timeOnCurve;
 
     // Cached Components
@@ -256,24 +252,10 @@ public class Player : MonoBehaviour
         float acceleration = _baseAcceleration;
         float accelerationDirection = 0.0f;
 
-        bool isDuringWallJump = _walljumpFrame < _walljumpAccelerationFrames;
-
-        // If acceleration overriden by a curve
-
-        if (!isDuringWallJump)
+        // Regular acceleration, if player is not wall sliding
+        if (!IsWallSliding)
         {
-            // Regular acceleration, if player is not wall sliding
-            if (!IsWallSliding)
-            {
-                accelerationDirection = _inputs.HorizontalInput;
-            }
-        }
-        else
-        {
-            // Walljump overrides input acceleration for duration
-            _walljumpFrame++;
-            acceleration = _walljumpAcceleration;
-            accelerationDirection = -_wallDirection;
+            accelerationDirection = _inputs.HorizontalInput;
         }
 
         _velocityChange.x += acceleration * accelerationDirection;
@@ -318,7 +300,7 @@ public class Player : MonoBehaviour
             {
                 if (walljumpPossible && _inputs.WallGrabPressed)
                 {
-                    _walljumpFrame = 0;
+                    SetCurrentVelocityCurve(_walljumpVelocityCurve, _walljumpVelocityMultipliers, new Vector2(-_wallDirection, 1.0f));
 
                     playerWalljumped?.Invoke(_wallDirection, _touchedWallPosition);
                 }
@@ -338,9 +320,19 @@ public class Player : MonoBehaviour
         _rb.velocity = new Vector2(_rb.velocity.x, newVerticalVelocity);
     }
 
+    void SetCurrentVelocityCurve(AnimationCurve velocityCurve, Vector2 velocityMultipliers, Vector2 velocityDirection)
+    {
+        _currentCurve = velocityCurve;
+        _curveVelocityVector = new Vector2(velocityMultipliers.x * velocityDirection.x,
+                                           velocityMultipliers.y * velocityDirection.y);
+        _timeOnCurve = 0.0f;
+
+        _rb.velocity = new Vector2(_rb.velocity.x, 0.0f);
+    }
+
     void ChangeVelocityByCurve()
     {
-        _velocityChange += _curveVelocityMultiplier * _currentCurve.Evaluate(_timeOnCurve);
+        _velocityChange += _currentCurve.Evaluate(_timeOnCurve) * _curveVelocityVector;
         _timeOnCurve += 1.0f;
     }
 
@@ -358,15 +350,7 @@ public class Player : MonoBehaviour
                                                     Mathf.Sign(dashPoint.y - transform.position.y));
                 dashDirection.Normalize();
 
-                _currentCurve = _dashVelocityCurve;
-
-                _curveVelocityMultiplier = new Vector2(dashDirection.x * _dashHorizontalMulti,
-                                                       dashDirection.y * _dashVerticalMulti);
-
-                _timeOnCurve = 0.0f;
-
-                // Dash resets vertical velocity
-                _rb.velocity = new Vector2(_rb.velocity.x, 0.0f);
+                SetCurrentVelocityCurve(_dashVelocityCurve, _dashVelocityMultipliers, dashDirection);
             }
         }
     }

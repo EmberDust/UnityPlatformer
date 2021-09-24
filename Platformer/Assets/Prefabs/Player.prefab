@@ -29222,13 +29222,108 @@ MonoBehaviour:
   _thresholdDeceleration: 0.505
   _additionalJumps: 1
   _jumpSpeed: 3.8
-  _fallingVelocityLimit: -7
-  _walljumpAccelerationFrames: 7
-  _walljumpAcceleration: 2
+  _dashVelocityMultipliers: {x: 0.25, y: 0.75}
+  _dashVelocityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.047850497
+      value: 0.022626676
+      inSlope: 0.008551862
+      outSlope: 0.008551862
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1.8924916
+      value: 0.039220214
+      inSlope: 0.016598983
+      outSlope: 0.016598983
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.10465345
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 2.0145679
+      value: 3.6589565
+      inSlope: 15.794707
+      outSlope: 15.794707
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.092367634
+      outWeight: 0.113832764
+    - serializedVersion: 3
+      time: 3.897374
+      value: 1.6577212
+      inSlope: -0.76227
+      outSlope: -0.76227
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.1046903
+    - serializedVersion: 3
+      time: 6.602294
+      value: 0.01714877
+      inSlope: -0.5032025
+      outSlope: -0.5032025
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.15653026
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _walljumpVelocityMultipliers: {x: 0.4, y: 0.125}
+  _walljumpVelocityCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.13145567
+      value: 1
+      inSlope: 1.709701
+      outSlope: 1.709701
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1.0391138
+      value: 3.0013237
+      inSlope: 0.000732451
+      outSlope: 0.000732451
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.104098715
+    - serializedVersion: 3
+      time: 4.166511
+      value: 1.1150354
+      inSlope: -0.09789688
+      outSlope: -0.09789688
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.23239788
+    - serializedVersion: 3
+      time: 7.1364274
+      value: 1
+      inSlope: -0.038733553
+      outSlope: -0.038733553
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   _baseGravityScale: 2
   _ascendingGravityScale: 0.75
   _fallingGravityScale: 2.75
   _wallSlideGravityScale: 0.15
+  _maximumHorizontalVelocity: 10
+  _maximumVerticalVelocity: 6
+  _minimumVerticalVelocity: -7
   _groundCheckPoint: {fileID: 2014453868632953729}
   _coyoteTime: 0.1
   _groundMask:
