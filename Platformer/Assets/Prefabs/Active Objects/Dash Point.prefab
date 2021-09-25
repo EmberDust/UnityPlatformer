@@ -153,7 +153,7 @@ LineRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8610386220640885647}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 0
@@ -196,7 +196,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.2480319
+        value: 0.12992814
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -208,8 +208,8 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 0.90410185, b: 0, a: 1}
-      key1: {r: 0.7924528, g: 0.15155192, b: 0, a: 0.39215687}
+      key0: {r: 1, g: 0.76531845, b: 0, a: 1}
+      key1: {r: 0.6037736, g: 0.11657015, b: 0, a: 0.7882353}
       key2: {r: 1, g: 0.5684316, b: 0, a: 1}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -239,7 +239,7 @@ LineRenderer:
     numCapVertices: 0
     alignment: 0
     textureMode: 0
-    shadowBias: 0.5
+    shadowBias: 0
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
