@@ -54,6 +54,7 @@ public class Player : MonoBehaviour
 
     #region Public Properties\Events
     public event Action<int, Vector2> playerWalljumped;
+    public event Action<DashPoint> playerDashed;
     public event Action playerGroundjumped;
     public event Action playerMultijumped;
     public event Action playerHasBeenDisabled;
@@ -340,17 +341,20 @@ public class Player : MonoBehaviour
     {
         if (_inputs.DashInput)
         {
-            if (DashPoint.ClosestInRange != null)
+            if (DashPointsManager.Instance.ClosestInRange != null)
             {
                 _inputs.ConsumeDashInput();
 
-                Vector2 dashPoint = DashPoint.ClosestInRange.transform.position;
+                DashPoint dashPoint = DashPointsManager.Instance.ClosestInRange;
+
                 // To make dash more consistent - limit number of possible dash directions
-                Vector2 dashDirection = new Vector2(Mathf.Sign(dashPoint.x - transform.position.x),
-                                                    Mathf.Sign(dashPoint.y - transform.position.y));
+                Vector2 dashDirection = new Vector2(Mathf.Sign(dashPoint.transform.position.x - transform.position.x),
+                                                    Mathf.Sign(dashPoint.transform.position.y - transform.position.y));
                 dashDirection.Normalize();
 
                 SetCurrentVelocityCurve(_dashVelocityCurve, _dashVelocityMultipliers, dashDirection);
+
+                playerDashed?.Invoke(dashPoint);
             }
         }
     }

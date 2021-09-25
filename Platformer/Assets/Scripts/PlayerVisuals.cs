@@ -8,6 +8,7 @@ public class PlayerVisuals : MonoBehaviour
     [Header("Running Animation Speed")]
     [SerializeField] float _runningVelocity = 3f;
     [SerializeField] float _baseAnimationSpeed = 1.0f;
+    [SerializeField] float _baseEmissionMultiplier = 1.0f;
 
     [Space]
     [Header("Particle Systems")]
@@ -26,6 +27,8 @@ public class PlayerVisuals : MonoBehaviour
 
     SpriteRenderer _sprite;
     Animator _anim;
+
+    ParticleSystem.EmissionModule _runningParticlesEmission;
 
     // Hashed animator params
     int _hashHorizontalVelocity;
@@ -48,6 +51,11 @@ public class PlayerVisuals : MonoBehaviour
 
         CreateMirroredWalljumpParticles();
 
+        if (_runningParticles != null)
+        {
+            _runningParticlesEmission = _runningParticles.emission;
+        }
+
         _player = GetComponent<Player>();
 
         _player.playerWalljumped   += EmitWalljumpParticles;
@@ -59,6 +67,7 @@ public class PlayerVisuals : MonoBehaviour
     void Update()
     {
         HandleRunningAnimationSpeed();
+        HandleRunningEmissionRate();
         PlayRunningParticles();
         PlayWallHangParticles();
         UpdateAnimator();
@@ -97,6 +106,21 @@ public class PlayerVisuals : MonoBehaviour
         else if (_anim.speed != _baseAnimationSpeed)
         {
             _anim.speed = _baseAnimationSpeed;
+        }
+    }
+
+    void HandleRunningEmissionRate()
+    {
+        if (_runningParticles != null)
+        {
+            if (Mathf.Abs(_rb.velocity.x) > _runningVelocity)
+            {
+                _runningParticlesEmission.rateOverTimeMultiplier = Mathf.Abs(_rb.velocity.x) / _runningVelocity * _baseEmissionMultiplier;
+            }
+            else if (_runningParticlesEmission.rateOverTimeMultiplier != _baseEmissionMultiplier)
+            {
+                _runningParticlesEmission.rateOverTimeMultiplier = _baseEmissionMultiplier;
+            }
         }
     }
 
