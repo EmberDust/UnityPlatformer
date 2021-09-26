@@ -97,6 +97,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BG Further Forest
       objectReference: {fileID: 0}
+    - target: {fileID: 1282837814706153863, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
+      propertyPath: _verticalParallax
+      value: 0.4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
 --- !u!4 &2028440334963585310 stripped
@@ -111,6 +115,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3980490886677366922}
     m_Modifications:
+    - target: {fileID: 3831362049707709504, guid: e7f94d35af2bb964b9c8ae4b3d8a8b6f, type: 3}
+      propertyPath: _parallax
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3831362049707709504, guid: e7f94d35af2bb964b9c8ae4b3d8a8b6f, type: 3}
+      propertyPath: _verticalParallax
+      value: 0.15
+      objectReference: {fileID: 0}
     - target: {fileID: 3831362049707709505, guid: e7f94d35af2bb964b9c8ae4b3d8a8b6f, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -181,6 +193,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3980490886677366922}
     m_Modifications:
+    - target: {fileID: 278417412, guid: 24d7868db3c6b2c4586bca480a4f47e7, type: 3}
+      propertyPath: _parallax
+      value: 0.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 278417412, guid: 24d7868db3c6b2c4586bca480a4f47e7, type: 3}
+      propertyPath: _verticalParallax
+      value: 0.95
+      objectReference: {fileID: 0}
     - target: {fileID: 2539233447871964620, guid: 24d7868db3c6b2c4586bca480a4f47e7, type: 3}
       propertyPath: m_Color.b
       value: 0.9103774
@@ -279,6 +299,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3980490886677366922}
     m_Modifications:
+    - target: {fileID: 1935037602, guid: b7f0d97c5e11eb6499b74ed748e3c0c6, type: 3}
+      propertyPath: _verticalParallax
+      value: 0.4
+      objectReference: {fileID: 0}
     - target: {fileID: 56131769841518301, guid: b7f0d97c5e11eb6499b74ed748e3c0c6, type: 3}
       propertyPath: m_Name
       value: BG Furthest Forest

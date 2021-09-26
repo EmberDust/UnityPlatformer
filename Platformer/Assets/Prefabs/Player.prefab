@@ -29220,6 +29220,9 @@ MonoBehaviour:
   _baseAcceleration: 1.5
   _thresholdVelocity: 3
   _thresholdDeceleration: 0.505
+  _slideDeceleration: 0.15
+  _slideAcceleration: 0.075
+  _slideThresholdDeceleration: 0
   _additionalJumps: 1
   _jumpSpeed: 3.8
   _dashVelocityMultipliers: {x: 0.25, y: 0.75}
@@ -29358,8 +29361,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d2f9fa744b54624ea5425ef0599381f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _runningVelocity: 2
-  _baseAnimationSpeed: 0.75
+  _runningVelocity: 3.05
+  _baseAnimationSpeed: 1
+  _baseEmissionMultiplier: 7
   _runningParticles: {fileID: 600919129}
   _jumpingParticles: {fileID: 751759892}
   _multijumpParticles: {fileID: 6556809107142993357}
