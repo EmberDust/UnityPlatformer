@@ -35,6 +35,7 @@ public class PlayerVisuals : MonoBehaviour
     int _hashIsFalling;
     int _hashIsJumping;
     int _hashIsDead;
+    int _hashIsSliding;
 
     void Start()
     {
@@ -48,6 +49,7 @@ public class PlayerVisuals : MonoBehaviour
         _hashIsFalling = Animator.StringToHash("isFalling");
         _hashIsJumping = Animator.StringToHash("isJumping");
         _hashIsDead    = Animator.StringToHash("isDead");
+        _hashIsSliding = Animator.StringToHash("isSliding");
 
         CreateMirroredWalljumpParticles();
 
@@ -128,7 +130,7 @@ public class PlayerVisuals : MonoBehaviour
     {
         if (_runningParticles != null)
         {
-            if (Mathf.Abs(_rb.velocity.x) > 0.1f && _player.Grounded && !_player.IsDisabled)
+            if (Mathf.Abs(_rb.velocity.x) > 0.1f && _player.IsGrounded && !_player.IsDisabled)
             {
                 if (!_runningParticles.isEmitting)
                 {
@@ -211,5 +213,6 @@ public class PlayerVisuals : MonoBehaviour
         _anim.SetBool(_hashIsFalling, _player.IsFalling);
         _anim.SetBool(_hashIsJumping, _player.IsJumping);
         _anim.SetBool(_hashIsDead, _player.IsDisabled);
+        _anim.SetBool(_hashIsSliding, _player.IsGroudSliding);
     }
 }

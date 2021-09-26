@@ -19,6 +19,11 @@ public class Player : MonoBehaviour
     [SerializeField] float _thresholdVelocity     = 3.25f;
     [SerializeField] float _thresholdDeceleration = 0.505f;
 
+    [Header("Ground Slide")]
+    [SerializeField] float _slideDeceleration = 0.1f;
+    [SerializeField] float _slideAcceleration = 0.0f;
+    [SerializeField] float _slideThresholdDeceleration = 0.1f;
+
     [Header("Jump")]
     [SerializeField] int   _additionalJumps =  1;
     [SerializeField] float _jumpSpeed = 4f;
@@ -61,11 +66,12 @@ public class Player : MonoBehaviour
     public event Action playerHasBeenEnabled;
     public event Action playerDied;
 
-    public bool Grounded      { get; private set; }
+    public bool IsGrounded    { get; private set; }
     public bool IsJumping     { get; private set; }
     public bool IsFalling     { get; private set; }
     public bool IsWallSliding { get; private set; }
     public bool IsDisabled    { get; private set; }
+    public bool IsGroudSliding { get { return _inputs.SlidePressed && IsGrounded; } }
 
     ///<summary>Is character movement is controled by AnimationCurve</summary>
     public bool IsMovementOverridenByCurve { get => _currentCurve != null && _timeOnCurve < _currentCurve.keys.Last().time; }
@@ -243,14 +249,30 @@ public class Player : MonoBehaviour
     #region Player Movement
     void HandleHorizontalAcceleration()
     {
+        float deceleration;
+        float acceleration;
+        float thresholdDeceleration;
+
+        if (IsGroudSliding)
+        {
+            deceleration = _slideDeceleration;
+            acceleration = _slideAcceleration;
+            thresholdDeceleration = _slideThresholdDeceleration;
+        }
+        else
+        {
+            deceleration = _baseDeceleration;
+            acceleration = _baseAcceleration;
+            thresholdDeceleration = _thresholdDeceleration;
+        }
+
         float horizontalVelocity = _rb.velocity.x;
         float velocityDirection = Mathf.Sign(horizontalVelocity);
 
         // Deceleration, can't exceed current velocity to prevent character from becoming a pendulum
-        _velocityChange.x += Mathf.Min(_baseDeceleration, Mathf.Abs(horizontalVelocity)) * -velocityDirection;
+        _velocityChange.x += Mathf.Min(deceleration, Mathf.Abs(horizontalVelocity)) * -velocityDirection;
 
         // Horizontal acceleration
-        float acceleration = _baseAcceleration;
         float accelerationDirection = 0.0f;
 
         // Regular acceleration, if player is not wall sliding
@@ -267,7 +289,7 @@ public class Player : MonoBehaviour
         {
             float velocityExcessDirection = Mathf.Sign(horizontalVelocity + _velocityChange.x);
             // Don't drop velocity below threshold value
-            _velocityChange.x += Mathf.Min(_thresholdDeceleration, velocityExcess) * -velocityExcessDirection;
+            _velocityChange.x += Mathf.Min(thresholdDeceleration, velocityExcess) * -velocityExcessDirection;
         }
     }
 
@@ -409,7 +431,7 @@ public class Player : MonoBehaviour
             _timeLastGrounded = Time.time;
         }
 
-        Grounded = currentlyGrounded;
+        IsGrounded = currentlyGrounded;
     }
 
     void WallCheck()
@@ -430,7 +452,7 @@ public class Player : MonoBehaviour
 
     void WallSlideCheck()
     {
-        bool satisfyWallSlideConditions = _isTouchingWall && !Grounded;
+        bool satisfyWallSlideConditions = _isTouchingWall && !IsGrounded;
 
         if (satisfyWallSlideConditions && _inputs.WallGrabPressed)
         {

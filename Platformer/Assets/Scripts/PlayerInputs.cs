@@ -10,6 +10,7 @@ public class PlayerInputs : MonoBehaviour
     public bool JumpPressed { get; private set; }
     public bool DashPressed { get; private set; }
     public bool WallGrabPressed { get; private set; }
+    public bool SlidePressed { get; private set; }
 
     float _timeJumpWasPressed = -1.0f;
     float _timeDashWasPressed = -1.0f;
@@ -21,6 +22,7 @@ public class PlayerInputs : MonoBehaviour
         JumpPressed = Input.GetButton("Jump");
         DashPressed = Input.GetButton("Dash");
         WallGrabPressed = Input.GetButton("WallGrab");
+        SlidePressed = Input.GetButton("Slide");
 
         if (Input.GetButtonDown("Jump"))
         {
