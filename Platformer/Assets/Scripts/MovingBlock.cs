@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MovingBlock : MonoBehaviour
 {
-    [SerializeField] Transform _blockBody = null;
+    [SerializeField] Rigidbody2D _blockBody = null;
     [SerializeField] bool _connectEnds;
     [SerializeField] float _speed = 1f;
 
@@ -81,8 +81,8 @@ public class MovingBlock : MonoBehaviour
             }
             else
             {
-                Vector3 movementDirection = (_routePointsPositions[_destinationPointIndex] - _blockBody.position).normalized;
-                _blockBody.Translate(movementDirection * _speed, Space.World);
+                Vector3 movementDirection = (_routePointsPositions[_destinationPointIndex] - _blockBody.transform.position).normalized;
+                _blockBody.MovePosition(_blockBody.transform.position + movementDirection * _speed);
             }
         }
     }
