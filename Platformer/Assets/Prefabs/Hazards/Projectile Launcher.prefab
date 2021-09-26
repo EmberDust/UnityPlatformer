@@ -98,7 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23d519a3e00077444b655006bad20420, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _projectilePrefab: {fileID: 6511677060010132010, guid: 43575348615d1094983a8d0e445d2733, type: 3}
+  _projectilePrefab: {fileID: 21725422863017638, guid: 43575348615d1094983a8d0e445d2733, type: 3}
   _projectilePoolSize: 1
   _shootFrom: {fileID: 1193815433214569533}
   _delayBetweenShots: 1.75

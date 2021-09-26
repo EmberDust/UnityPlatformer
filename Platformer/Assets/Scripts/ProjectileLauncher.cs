@@ -6,7 +6,7 @@ using UnityEngine;
 public class ProjectileLauncher : MonoBehaviour
 {
     [Header("Projectile pool")]
-    [SerializeField] GameObject _projectilePrefab;
+    [SerializeField] Projectile _projectilePrefab;
     [SerializeField] int _projectilePoolSize = 10;
 
     [Header("Projectile launcher")]
@@ -53,27 +53,19 @@ public class ProjectileLauncher : MonoBehaviour
 
     void CreateProjectileInPool()
     {
-        GameObject newProjectile = Instantiate(_projectilePrefab);
-        Projectile newProjectileScript = newProjectile.GetComponent<Projectile>();
+        Projectile newProjectileScript = Instantiate<Projectile>(_projectilePrefab);
+        GameObject newProjectile = newProjectileScript.gameObject;
 
-        if (newProjectileScript != null && _correctProjectileObject)
-        {
-            // Subscribe to projectile events
-            newProjectileScript.projectileCollided += ReturnProjectileToPool;
-            newProjectileScript.projectileExpired += ReturnProjectileToPool;
+        // Subscribe to projectile events
+        newProjectileScript.projectileCollided += ReturnProjectileToPool;
+        newProjectileScript.projectileExpired += ReturnProjectileToPool;
 
-            // Put them under the current object to avoid mess in the hierarchy
-            newProjectile.transform.SetParent(transform);
+        // Put them under the current object to avoid mess in the hierarchy
+        newProjectile.transform.SetParent(transform);
 
-            newProjectile.SetActive(false);
+        newProjectile.SetActive(false);
 
-            _projectilePool.Enqueue(newProjectileScript);
-        }
-        else
-        {
-            Debug.LogError("Projectile Game Object doesn't have required component");
-            _correctProjectileObject = false;
-        }
+        _projectilePool.Enqueue(newProjectileScript);
     }
 
     void ShootProjectile()

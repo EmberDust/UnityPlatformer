@@ -16,8 +16,17 @@ public class PlayerVisuals : MonoBehaviour
     [SerializeField] ParticleSystem _jumpingParticles   = null;
     [SerializeField] ParticleSystem _multijumpParticles = null;
     [SerializeField] ParticleSystem _walljumpParticles  = null;
-    [SerializeField] ParticleSystem _wallHangParticles  = null;
+    [SerializeField] ParticleSystem _wallSlideParticles = null;
     [SerializeField] ParticleSystem _deathParticles     = null;
+
+    [Space]
+    [Header("AfterImage Effect")]
+    [SerializeField] AfterImagePool _afterImagePool;
+    [SerializeField] float _afterImageVelocity = 4.0f;
+    [SerializeField] float _secondsBetweenImages = 0.1f;
+    [SerializeField] float _startingFadeOut = 0.5f;
+    [SerializeField] float _fadeOutRate = 0.1f;
+    [SerializeField] float _fadeOutAmount = 0.1f;
 
     ParticleSystem _leftWalljumpParticles  = null;
     ParticleSystem _rightWalljumpParticles = null;
@@ -29,6 +38,8 @@ public class PlayerVisuals : MonoBehaviour
     Animator _anim;
 
     ParticleSystem.EmissionModule _runningParticlesEmission;
+
+    float _timeLastImageCreated;
 
     // Hashed animator params
     int _hashHorizontalVelocity;
@@ -68,10 +79,11 @@ public class PlayerVisuals : MonoBehaviour
 
     void Update()
     {
-        HandleRunningAnimationSpeed();
-        HandleRunningEmissionRate();
+        AdjustRunningAnimationSpeed();
+        AdjustRunningEmissionRate();
+        SpawnAfterImageEffect();
         PlayRunningParticles();
-        PlayWallHangParticles();
+        PlayWallSlideParticles();
         UpdateAnimator();
     }
 
@@ -98,7 +110,39 @@ public class PlayerVisuals : MonoBehaviour
         }
     }
 
-    void HandleRunningAnimationSpeed()
+    void SpawnAfterImageEffect()
+    {
+        if (_afterImagePool != null)
+        {
+            bool IsSpawningAfterImages = _player.IsMovementOverridenByCurve || Mathf.Abs(_rb.velocity.x) > _afterImageVelocity;
+
+            if (IsSpawningAfterImages)
+            {
+                if (_timeLastImageCreated + _secondsBetweenImages < Time.time)
+                {
+                    AfterImage afterImage = _afterImagePool.GetAfterImageFromPool(transform.position, transform.rotation);
+                    afterImage.transform.localScale = transform.localScale;
+
+                    afterImage.Sprite.sprite = _sprite.sprite;
+                    afterImage.StartingColor = _sprite.color;
+
+                    afterImage.CurrentFadeOut = _startingFadeOut;
+                    afterImage.FadeOutAmount = _fadeOutAmount;
+                    afterImage.FadeOutRate = _fadeOutRate;
+
+                    afterImage.StartFadeOut();
+
+                    _timeLastImageCreated = Time.time;
+                }
+            }
+            else
+            {
+                _timeLastImageCreated = -_secondsBetweenImages;
+            }
+        }
+    }
+
+    void AdjustRunningAnimationSpeed()
     {
         // Increases animation speed based on player velocity
         if (Mathf.Abs(_rb.velocity.x) > _runningVelocity)
@@ -111,7 +155,7 @@ public class PlayerVisuals : MonoBehaviour
         }
     }
 
-    void HandleRunningEmissionRate()
+    void AdjustRunningEmissionRate()
     {
         if (_runningParticles != null)
         {
@@ -144,20 +188,20 @@ public class PlayerVisuals : MonoBehaviour
         }
     }
 
-    void PlayWallHangParticles()
+    void PlayWallSlideParticles()
     {
-        if (_wallHangParticles != null)
+        if (_wallSlideParticles != null)
         {
             if (_player.IsWallSliding && _player.IsFalling && !_player.IsDisabled)
             {
-                if (!_wallHangParticles.isEmitting)
+                if (!_wallSlideParticles.isEmitting)
                 {
-                    _wallHangParticles.Play();
+                    _wallSlideParticles.Play();
                 }
             }
             else
             {
-                _wallHangParticles.Stop();
+                _wallSlideParticles.Stop();
             }
         }
     }

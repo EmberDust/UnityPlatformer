@@ -29112,6 +29112,7 @@ GameObject:
   - component: {fileID: 1227212753}
   - component: {fileID: 728836082}
   - component: {fileID: 104098792}
+  - component: {fileID: 1690828466}
   m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
@@ -29368,8 +29369,14 @@ MonoBehaviour:
   _jumpingParticles: {fileID: 751759892}
   _multijumpParticles: {fileID: 6556809107142993357}
   _walljumpParticles: {fileID: 595268745}
-  _wallHangParticles: {fileID: 1990032881}
+  _wallSlideParticles: {fileID: 0}
   _deathParticles: {fileID: 1478986520}
+  _afterImagePool: {fileID: 1690828466}
+  _afterImageVelocity: 4.5
+  _secondsBetweenImages: 0.125
+  _startingFadeOut: 0.4
+  _fadeOutRate: 0.1
+  _fadeOutAmount: 0.1
 --- !u!114 &104098792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29386,6 +29393,20 @@ MonoBehaviour:
   _framesBetweenSaves: 3
   _pauseTracker: 1
   _overwriteCurrentPath: 1
+--- !u!114 &1690828466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7945967496813168226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78887e2ab86f26448bc27658b4cc8c2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _afterImagePrefab: {fileID: 6063256170711284868, guid: 4783c93aa5b1275469cc2fb7043f0c33, type: 3}
+  _poolSize: 10
 --- !u!1 &7945967496979675913
 GameObject:
   m_ObjectHideFlags: 0

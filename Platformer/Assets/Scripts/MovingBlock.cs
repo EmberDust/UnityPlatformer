@@ -59,10 +59,13 @@ public class MovingBlock : MonoBehaviour
     {
         if (_blockBody != null)
         {
-            if (Vector2.Distance(_routePointsPositions[_destinationPointIndex], _blockBody.position) < _speed / 2f)
+            bool reachedRoutePoint = Vector2.Distance(_routePointsPositions[_destinationPointIndex], _blockBody.position) < _speed / 2f;
+
+            if (reachedRoutePoint)
             {
-                // If we've reached the end of the route
-                if (_destinationPointIndex + _traverseDirection >= _routePointsPositions.Count || _destinationPointIndex + _traverseDirection < 0)
+                bool reachedEndOfRoute = _destinationPointIndex + _traverseDirection >= _routePointsPositions.Count || _destinationPointIndex + _traverseDirection < 0;
+
+                if (reachedEndOfRoute)
                 {
                     // Loop
                     if (_connectEnds)
