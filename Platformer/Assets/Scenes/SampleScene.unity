@@ -3917,6 +3917,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4923431796499811364, guid: f809a6a65c500604ca50d0a9eeb2c104, type: 3}
   m_PrefabInstance: {fileID: 977434830}
   m_PrefabAsset: {fileID: 0}
+--- !u!198 &1027621886 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1990032881, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+  m_PrefabInstance: {fileID: 7945967496994023832}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1222119994
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4038,10 +4043,6 @@ PrefabInstance:
     - target: {fileID: 1233476686622923204, guid: 21ab2db940823cb429ab360525d59e37, type: 3}
       propertyPath: m_Name
       value: Dash Point (5)
-      objectReference: {fileID: 0}
-    - target: {fileID: 5567415441301323612, guid: 21ab2db940823cb429ab360525d59e37, type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21ab2db940823cb429ab360525d59e37, type: 3}
@@ -118558,6 +118559,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 728836082, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
+      propertyPath: _wallSlideParticles
+      value: 
+      objectReference: {fileID: 1027621886}
     - target: {fileID: 7945967496813168226, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
       propertyPath: m_Name
       value: Player

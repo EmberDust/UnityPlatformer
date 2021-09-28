@@ -187,7 +187,7 @@ LineRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 3161ef3719ce4f648867e1777a101617, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -207,10 +207,9 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1688749599
   m_SortingLayer: 1
-  m_SortingOrder: 10
+  m_SortingOrder: -10
   m_Positions:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
+  - {x: -14.56, y: 11.02, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -219,7 +218,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.12992814
+        value: 0.18920854
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -231,10 +230,10 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 0.8065821, b: 0, a: 1}
-      key1: {r: 0.7169812, g: 0.33743548, b: 0.10416517, a: 0.7921569}
-      key2: {r: 1, g: 0.5684316, b: 0, a: 1}
-      key3: {r: 0, g: 0, b: 0, a: 0}
+      key0: {r: 1, g: 0.76552594, b: 0, a: 0.6862745}
+      key1: {r: 1, g: 0.31839958, b: 0, a: 0.6862745}
+      key2: {r: 1, g: 0.39564148, b: 0, a: 0.78431374}
+      key3: {r: 1, g: 0.39564148, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
       key6: {r: 0, g: 0, b: 0, a: 0}
@@ -242,14 +241,14 @@ LineRenderer:
       ctime0: 0
       ctime1: 65535
       ctime2: 65535
-      ctime3: 0
+      ctime3: 65535
       ctime4: 0
       ctime5: 0
       ctime6: 0
       ctime7: 0
       atime0: 0
       atime1: 65535
-      atime2: 65535
+      atime2: 64957
       atime3: 0
       atime4: 0
       atime5: 0
@@ -259,7 +258,7 @@ LineRenderer:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     numCornerVertices: 0
-    numCapVertices: 0
+    numCapVertices: 1
     alignment: 0
     textureMode: 0
     shadowBias: 0

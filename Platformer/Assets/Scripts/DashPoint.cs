@@ -34,7 +34,7 @@ public class DashPoint : MonoBehaviour
     {
         if (IsClosest && !IsOnCooldown)
         {
-            _lineToPlayer.SetPosition(1, GameManager.Instance.PlayerObject.transform.position);
+            _lineToPlayer.SetPosition(1, GameManager.Instance.PlayerObject.transform.position - new Vector3(0.0f, 0.1f, 0.0f));
         }
 
         UpdateAnimator();
