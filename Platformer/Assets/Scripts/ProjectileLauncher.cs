@@ -20,6 +20,7 @@ public class ProjectileLauncher : MonoBehaviour
 
     [Header("Player targeting")]
     [SerializeField] bool _targetPlayer = false;
+    [SerializeField] float _maximumShootRange = 20f;
     [SerializeField] LayerMask _playerAndObstaclesLayers;
 
     Queue<Projectile> _projectilePool = new Queue<Projectile>();
@@ -72,20 +73,24 @@ public class ProjectileLauncher : MonoBehaviour
     {
         if (_targetPlayer)
         {
-            Vector2 playerDirection = GameManager.Instance.PlayerObject.transform.position - transform.position;
-            playerDirection.Normalize();
+            Vector2 vectorToPlayer = GameManager.Instance.PlayerObject.transform.position - transform.position;
 
-            float distanceToPlayer = Vector2.Distance(GameManager.Instance.PlayerObject.transform.position, transform.position);
-
-            // Check if player is in the line of sight
-            RaycastHit2D raycastTowardsPlayer = Physics2D.Raycast(transform.position, playerDirection, distanceToPlayer, _playerAndObstaclesLayers);
-
-            if (raycastTowardsPlayer)
+            if (vectorToPlayer.magnitude < _maximumShootRange && !GameManager.Instance.PlayerScript.IsDisabled)
             {
-                if (raycastTowardsPlayer.collider.gameObject == GameManager.Instance.PlayerObject)
+                vectorToPlayer.Normalize();
+
+                float distanceToPlayer = Vector2.Distance(GameManager.Instance.PlayerObject.transform.position, transform.position);
+
+                // Check if player is in the line of sight
+                RaycastHit2D raycastTowardsPlayer = Physics2D.Raycast(transform.position, vectorToPlayer, distanceToPlayer, _playerAndObstaclesLayers);
+
+                if (raycastTowardsPlayer)
                 {
-                    ShootProjectile(_shootFromPosition, playerDirection * _projectileVelocity);
-                    _timeLastShot = Time.time;
+                    if (raycastTowardsPlayer.collider.gameObject == GameManager.Instance.PlayerObject)
+                    {
+                        ShootProjectile(_shootFromPosition, vectorToPlayer * _projectileVelocity);
+                        _timeLastShot = Time.time;
+                    }
                 }
             }
         }
