@@ -201,8 +201,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1660446336063827179, guid: 4b78686d0b0e8c2498badecd09c5fdf5, type: 3}
+      propertyPath: _speed
+      value: 0.075
+      objectReference: {fileID: 0}
+    - target: {fileID: 1660446336063827179, guid: 4b78686d0b0e8c2498badecd09c5fdf5, type: 3}
       propertyPath: _connectEnds
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1660446336063827179, guid: 4b78686d0b0e8c2498badecd09c5fdf5, type: 3}
+      propertyPath: _pauseOnRoutePoints
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 1660446336063827181, guid: 4b78686d0b0e8c2498badecd09c5fdf5, type: 3}
       propertyPath: m_Name

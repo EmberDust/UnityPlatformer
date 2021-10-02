@@ -22,6 +22,8 @@ public class GlobalText : MonoBehaviour
         {
             Instance = this;
             Debug.Log("Global text singleton has been instantiated");
+
+            DontDestroyOnLoad(transform.parent);
         }
     }
 

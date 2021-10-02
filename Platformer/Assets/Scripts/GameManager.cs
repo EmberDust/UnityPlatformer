@@ -6,12 +6,12 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("Player rules")]
+    [Header("Player Rules")]
     [SerializeField] float _playerSpawnDelay = 0.25f;
     [SerializeField] float _playerRespawnDelay = 1.0f;
     [SerializeField] float _fallHeight = -10f;
 
-    [Header("Level transitions")]
+    [Header("Level Transition")]
     [SerializeField] float _delayBeforeFadeOut = 0.4f;
     [SerializeField] float _delayAfterFadeOutTriggered  = 0.4f;
 
@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     // Singleton
     public static GameManager Instance { get; private set; }
 
+    public int CurrentCollectablesScore { get; set; }
     public Vector2 CheckpointPosition  { get; set; }
     public Vector2 ExitPosition        { get; set; }
     public Checkpoint ActiveCheckpoint { get; private set; }
@@ -31,9 +32,13 @@ public class GameManager : MonoBehaviour
 
     public Action sceneLoaded;
     public Action sceneEnded;
+    public Action checkPointReached;
 
     string _currentSceneName;
     int    _currentSceneIndex = 0;
+
+    float _currentSceneTimer = 0.0f;
+    bool _pauseSceneTimer = false;
 
     Animator _transitionAnimator;
 
@@ -59,17 +64,7 @@ public class GameManager : MonoBehaviour
     {
         _transitionAnimator = GetComponentInChildren<Animator>();
 
-        PlayerScript = FindObjectOfType<Player>();
-        if (PlayerScript != null)
-        {
-            PlayerObject = PlayerScript.gameObject;
-
-            PlayerScript.playerDied += OnPlayerDeath;
-        }
-        else
-        {
-            Debug.LogWarning("Object with Player Script wasn't found");
-        }
+        FindPlayer();
 
         sceneLoaded += OnSceneLoad;
         sceneEnded += OnSceneEnd;
@@ -85,6 +80,29 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        if (!_pauseSceneTimer)
+        {
+            _currentSceneTimer += Time.deltaTime;
+        }
+
+        TimeSpan formattedTime = TimeSpan.FromMilliseconds(_currentSceneTimer * 1000);
+
+        GlobalText.Instance.AppendText(formattedTime.ToString("mm':'ss'.'ff"));
+        GlobalText.Instance.AppendText("Current Score: " + CurrentCollectablesScore.ToString());
+    }
+
+    public void AddCollectablePoint()
+    {
+
+    }
+
+    public void RemoveCollectablePoint()
+    {
+
+    }
+
     public void SetNewCheckpoint(Checkpoint newCheckpoint)
     {
         if (ActiveCheckpoint != null)
@@ -96,6 +114,8 @@ public class GameManager : MonoBehaviour
         ActiveCheckpoint = newCheckpoint;
 
         CheckpointPosition = newCheckpoint.transform.position;
+
+        checkPointReached?.Invoke();
     }
 
     public void LoadNextScene()
@@ -142,6 +162,37 @@ public class GameManager : MonoBehaviour
 
         Debug.Log($"Scene name: {_currentSceneName} Index: {_currentSceneIndex}. Loaded.");
 
+        FindPlayerSpawn();
+        FindLevelExit();
+
+        if (_transitionAnimator != null)
+        {
+            _transitionAnimator.SetTrigger("FadeInTriggered");
+        }
+
+        _currentSceneTimer = 0.0f;
+        _pauseSceneTimer = false;
+
+        StartCoroutine(SpawnPlayerAfterDelay(_playerSpawnDelay));
+    }
+
+    void FindPlayer()
+    {
+        PlayerScript = FindObjectOfType<Player>();
+        if (PlayerScript != null)
+        {
+            PlayerObject = PlayerScript.gameObject;
+
+            PlayerScript.playerDied += OnPlayerDeath;
+        }
+        else
+        {
+            Debug.LogWarning("Object with Player Script wasn't found");
+        }
+    }
+
+    void FindPlayerSpawn()
+    {
         PlayerSpawn playerSpawn = FindObjectOfType<PlayerSpawn>();
 
         if (playerSpawn != null)
@@ -153,7 +204,10 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("Player Spawn wasn't found");
             CheckpointPosition = Vector2.zero;
         }
+    }
 
+    void FindLevelExit()
+    {
         ExitScript exitScript = FindObjectOfType<ExitScript>();
 
         if (exitScript != null)
@@ -165,18 +219,13 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning("Exit Script wasn't found");
             ExitPosition = Vector2.zero;
         }
-
-        if (_transitionAnimator != null)
-        {
-            _transitionAnimator.SetTrigger("FadeInTriggered");
-        }
-
-        StartCoroutine(SpawnPlayerAfterDelay(_playerSpawnDelay));
     }
 
     void OnSceneEnd()
     {
         PlayerScript.DisablePlayer();
+
+        _pauseSceneTimer = true;
 
         _fadeOutFinished = false;
         StartCoroutine(FadeOutToNextScene());
