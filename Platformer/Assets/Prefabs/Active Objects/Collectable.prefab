@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 5155328600491676604}
   - component: {fileID: 5155328600491676605}
   - component: {fileID: 5155328600491676606}
+  - component: {fileID: 5272195600912976883}
   - component: {fileID: 5155328600491676607}
   m_Layer: 0
-  m_Name: cherry-4
+  m_Name: Collectable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,7 +53,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -70,9 +71,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1688749599
+  m_SortingLayer: 1
+  m_SortingOrder: 50
   m_Sprite: {fileID: 21300000, guid: 4f3dc6ccaf04b4061a059006d96715f1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -110,6 +111,25 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.328125, y: 0.328125}
   m_EdgeRadius: 0
+--- !u!95 &5272195600912976883
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5155328600491676592}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b3fc6de0053990e45b2b1e65652aec1a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &5155328600491676607
 MonoBehaviour:
   m_ObjectHideFlags: 0

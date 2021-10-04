@@ -10,8 +10,6 @@ public class Player : MonoBehaviour
     static Player Instance { get; set; }
 
     #region Serialized Fields
-    [SerializeField]float _timeScale = 1.0f;
-
     [Space]
     [Header("Horizontal Movement Values")]
     [SerializeField] float _baseDeceleration      = 1.0f;
@@ -124,8 +122,6 @@ public class Player : MonoBehaviour
 
         _colliders = GetComponents<Collider2D>().ToList();
 
-        Time.timeScale = _timeScale;
-
         DontDestroyOnLoad(gameObject);
 
         DisablePlayer();
@@ -133,11 +129,6 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (!IsDisabled)
-        {
-            FaceMovementDirection();
-        }
-
         GlobalText.Instance.AppendText($"Player velocity: {_rb.velocity}");
     }
 
@@ -149,6 +140,7 @@ public class Player : MonoBehaviour
             _velocityChange = new Vector2(0.0f, 0.0f);
 
             // State changes, without directly affecting physics or logic
+            FaceMovementDirection();
             GroundCheck();
             UpdateFallingState();
             WallCheck();

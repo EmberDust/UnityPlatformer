@@ -5,12 +5,31 @@ public abstract class PowerUp : MonoBehaviour
 {
     [SerializeField] protected float _respawnDelay = 5.0f;
 
-    public bool WasConsumed { get; protected set; }
+    public bool WasConsumed 
+    { 
+        get
+        {
+            return _wasConsumed;
+        }
 
-    protected Animator _animator;
+        protected set 
+        {
+            _wasConsumed = value;
+
+            transform.position = _startingPosition;
+
+            _animator.SetBool(_hashWasConsumed, value);
+        } 
+    }
+
+    protected bool _wasConsumed;
 
     protected Vector2 _startingPosition;
+
+    protected Animator _animator;
     protected int _hashWasConsumed;
+
+    protected Coroutine _respawnCoroutine;
 
     void Start()
     {
@@ -19,31 +38,46 @@ public abstract class PowerUp : MonoBehaviour
         _hashWasConsumed = Animator.StringToHash("WasConsumed");
 
         _startingPosition = transform.position;
+
+        StartCoroutine(Utils.DoAfterAFrame(SetupPowerUp));
     }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject == GameManager.Instance.PlayerObject)
+        if (!WasConsumed && collision.gameObject == GameManager.Instance.PlayerObject)
         {
-            if (!WasConsumed)
-            {
-                GrantPowerUp();
+            GrantPowerUp();
 
-                WasConsumed = true;
-                _animator.SetBool(_hashWasConsumed, WasConsumed);
+            WasConsumed = true;
 
-                StartCoroutine(RespawnAfterDelay());
-            }
+            _respawnCoroutine = StartCoroutine(RespawnAfterDelay());
         }
     }
+
+    void OnDisable()
+    {
+        GameManager.Instance.PlayerScript.playerHasBeenEnabled -= RespawnPowerUp;
+    }
+
+    void SetupPowerUp()
+    {
+        GameManager.Instance.PlayerScript.playerHasBeenEnabled += RespawnPowerUp;
+    }
+
     IEnumerator RespawnAfterDelay()
     {
         yield return new WaitForSeconds(_respawnDelay);
+        RespawnPowerUp();
+    }
+
+    void RespawnPowerUp()
+    {
+        if (_respawnCoroutine != null)
+        {
+            StopCoroutine(_respawnCoroutine);
+        }
 
         WasConsumed = false;
-        _animator.SetBool(_hashWasConsumed, WasConsumed);
-
-        transform.position = _startingPosition;
     }
 
     protected abstract void GrantPowerUp();

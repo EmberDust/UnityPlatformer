@@ -23,18 +23,18 @@ public class Collectable : MonoBehaviour
             {
                 if (value == State.Collected)
                 {
-                    _sprite.color = _startingColor * 0.5f;
                     GameManager.Instance.CurrentCollectablesScore++;
                     hasBeenCollected?.Invoke();
                 }
                 else
                 {
-                    _sprite.color = _startingColor;
+                    transform.position = _startingPosition;
                     GameManager.Instance.CurrentCollectablesScore--;
                     hasBeenReturned?.Invoke();
                 }
 
                 _currentState = value;
+                _animator.SetBool(_hashWasCollected, value == State.Collected);
             }
         }
     }
@@ -42,14 +42,18 @@ public class Collectable : MonoBehaviour
     State _savedState   = State.NotCollected;
     State _currentState = State.NotCollected;
 
-    SpriteRenderer _sprite;
+    Vector2 _startingPosition;
 
-    Color _startingColor;
+    Animator _animator;
+    int _hashWasCollected;
 
     void Start()
     {
-        _sprite = GetComponent<SpriteRenderer>();
-        _startingColor = _sprite.color;
+        _animator = GetComponent<Animator>();
+
+        _hashWasCollected = Animator.StringToHash("WasCollected");
+
+        _startingPosition = transform.position;
 
         StartCoroutine(Utils.DoAfterAFrame(SetupCollectable));
     }
@@ -60,6 +64,12 @@ public class Collectable : MonoBehaviour
         {
             CurrentState = State.Collected;
         }
+    }
+
+    void OnDisable()
+    {
+        GameManager.Instance.checkPointReached -= SaveCurrentState;
+        GameManager.Instance.PlayerScript.playerHasBeenEnabled -= ResetToSavedState;
     }
 
     void SetupCollectable()

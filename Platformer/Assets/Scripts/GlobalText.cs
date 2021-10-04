@@ -6,11 +6,11 @@ using TMPro;
 
 public class GlobalText : MonoBehaviour
 {
-    TextMeshProUGUI _textMesh;
-    StringBuilder _textString = new StringBuilder();
-
     // Singleton
     static public GlobalText Instance { get; private set; }
+
+    TextMeshProUGUI _textMesh;
+    StringBuilder _textString = new StringBuilder();
 
     void Awake()
     {

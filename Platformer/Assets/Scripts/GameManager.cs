@@ -3,9 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class GameManager : MonoBehaviour
 {
+    // Singleton
+    public static GameManager Instance { get; private set; }
+
     [Header("Player Rules")]
     [SerializeField] float _playerSpawnDelay = 0.25f;
     [SerializeField] float _playerRespawnDelay = 1.0f;
@@ -15,13 +20,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] float _delayBeforeFadeOut = 0.4f;
     [SerializeField] float _delayAfterFadeOutTriggered  = 0.4f;
 
+    [Header("Pause Screen")]
+    [SerializeField] float _transitionToPauseDuration = 0.2f;
+    [SerializeField] float _transitionToPauseTimeStep = 0.02f;
+
     [Header("Levels")]
     [SerializeField] bool _loopLevels = false;
     [SerializeField] List<string> _scenesLoadOrder;
 
-    // Singleton
-    public static GameManager Instance { get; private set; }
-
+    public bool IsGamePaused { get; private set; }
     public int CurrentCollectablesScore { get; set; }
     public Vector2 CheckpointPosition  { get; set; }
     public Vector2 ExitPosition        { get; set; }
@@ -40,6 +47,9 @@ public class GameManager : MonoBehaviour
     float _currentSceneTimer = 0.0f;
     bool _pauseSceneTimer = false;
 
+    bool _currentlyInPauseTransition;
+    ColorAdjustments _pauseColorAdjustment;
+
     Animator _transitionAnimator;
 
     AsyncOperation _loadSceneOperation;
@@ -54,8 +64,6 @@ public class GameManager : MonoBehaviour
         else
         {
             Instance = this;
-            Debug.Log("GameManager singleton has been instantiated");
-
             DontDestroyOnLoad(gameObject);
         }
     }
@@ -63,6 +71,9 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         _transitionAnimator = GetComponentInChildren<Animator>();
+
+        Volume pauseVolume = GetComponentInChildren<Volume>();
+        pauseVolume.profile.TryGet(out _pauseColorAdjustment);
 
         FindPlayer();
 
@@ -78,13 +89,18 @@ public class GameManager : MonoBehaviour
         {
             PlayerScript.Kill();
         }
+
+        if (!_pauseSceneTimer)
+        {
+            _currentSceneTimer += Time.deltaTime;
+        }
     }
 
     void Update()
     {
-        if (!_pauseSceneTimer)
+        if (Input.GetButtonDown("Pause"))
         {
-            _currentSceneTimer += Time.deltaTime;
+            TogglePause();
         }
 
         TimeSpan formattedTime = TimeSpan.FromMilliseconds(_currentSceneTimer * 1000);
@@ -93,31 +109,7 @@ public class GameManager : MonoBehaviour
         GlobalText.Instance.AppendText("Current Score: " + CurrentCollectablesScore.ToString());
     }
 
-    public void AddCollectablePoint()
-    {
-
-    }
-
-    public void RemoveCollectablePoint()
-    {
-
-    }
-
-    public void SetNewCheckpoint(Checkpoint newCheckpoint)
-    {
-        if (ActiveCheckpoint != null)
-        {
-            ActiveCheckpoint.IsActive = false;
-        }
-
-        newCheckpoint.IsActive = true;
-        ActiveCheckpoint = newCheckpoint;
-
-        CheckpointPosition = newCheckpoint.transform.position;
-
-        checkPointReached?.Invoke();
-    }
-
+    #region Scene Management
     public void LoadNextScene()
     {
         int nextSceneIndex = _currentSceneIndex + 1;
@@ -244,6 +236,23 @@ public class GameManager : MonoBehaviour
 
         _fadeOutFinished = true;
     }
+    #endregion
+
+    #region Checkpoints\Respawn
+    public void SetNewCheckpoint(Checkpoint newCheckpoint)
+    {
+        if (ActiveCheckpoint != null)
+        {
+            ActiveCheckpoint.IsActive = false;
+        }
+
+        newCheckpoint.IsActive = true;
+        ActiveCheckpoint = newCheckpoint;
+
+        CheckpointPosition = newCheckpoint.transform.position;
+
+        checkPointReached?.Invoke();
+    }
 
     void OnPlayerDeath()
     {
@@ -257,4 +266,50 @@ public class GameManager : MonoBehaviour
         PlayerObject.transform.position = CheckpointPosition;
         PlayerScript.EnablePlayer();
     }
+    #endregion
+
+    #region Pause Screen
+    void TogglePause()
+    {
+        if (!_currentlyInPauseTransition)
+        {
+            if (IsGamePaused)
+            {
+                StartCoroutine(PauseTransition(1.0f, 5.0f, false, false));
+            }
+            else
+            {
+                StartCoroutine(PauseTransition(0.0f, -75.0f, true, true));
+            }
+        }
+    }
+
+    IEnumerator PauseTransition(float finalTimeScale, float finalSaturation, bool gamePausedAfter, bool volumeEnabledAfter)
+    {
+        _currentlyInPauseTransition = true;
+
+        _pauseColorAdjustment.active = true;
+        float startingSaturation = _pauseColorAdjustment.saturation.value;
+
+        float startingTimeScale = Time.timeScale;
+
+        float totalTimeSteps = _transitionToPauseDuration / _transitionToPauseTimeStep;
+
+        for (int currentTimeStep = 1; currentTimeStep < totalTimeSteps; currentTimeStep++)
+        {
+            _pauseColorAdjustment.saturation.value = Mathf.Lerp(startingSaturation, finalSaturation, currentTimeStep / totalTimeSteps);
+            Time.timeScale = Mathf.Lerp(startingTimeScale, finalTimeScale, currentTimeStep / totalTimeSteps);
+
+            yield return new WaitForSeconds(_transitionToPauseTimeStep);
+        }
+
+        Time.timeScale = finalTimeScale;
+        _pauseColorAdjustment.saturation.value = finalSaturation;
+
+        IsGamePaused = gamePausedAfter;
+        _pauseColorAdjustment.active = volumeEnabledAfter;
+
+        _currentlyInPauseTransition = false;
+    }
+    #endregion
 }

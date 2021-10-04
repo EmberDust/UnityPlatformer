@@ -17,21 +17,24 @@ public class PlayerInputs : MonoBehaviour
 
     void Update()
     {
-        HorizontalInput = Input.GetAxisRaw("Horizontal");
-
-        JumpPressed = Input.GetButton("Jump");
-        DashPressed = Input.GetButton("Dash");
-        WallGrabPressed = Input.GetButton("WallGrab");
-        SlidePressed = Input.GetButton("Slide");
-
-        if (Input.GetButtonDown("Jump"))
+        if (!GameManager.Instance.IsGamePaused)
         {
-            _timeJumpWasPressed = Time.time;
-        }
+            HorizontalInput = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetButtonDown("Dash"))
-        {
-            _timeDashWasPressed = Time.time;
+            JumpPressed = Input.GetButton("Jump");
+            DashPressed = Input.GetButton("Dash");
+            WallGrabPressed = Input.GetButton("WallGrab");
+            SlidePressed = Input.GetButton("Slide");
+
+            if (Input.GetButtonDown("Jump"))
+            {
+                _timeJumpWasPressed = Time.time;
+            }
+
+            if (Input.GetButtonDown("Dash"))
+            {
+                _timeDashWasPressed = Time.time;
+            }
         }
     }
 

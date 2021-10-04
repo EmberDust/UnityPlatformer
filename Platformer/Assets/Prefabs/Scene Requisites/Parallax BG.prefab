@@ -133,11 +133,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1282837814706153860, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.25
+      value: 1.125
       objectReference: {fileID: 0}
     - target: {fileID: 1282837814706153860, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.25
+      value: 1.125
       objectReference: {fileID: 0}
     - target: {fileID: 1282837814706153860, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
       propertyPath: m_LocalPosition.x
@@ -183,6 +183,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: BG Further Forest
       objectReference: {fileID: 0}
+    - target: {fileID: 1282837814706153862, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
+      propertyPath: m_Color.b
+      value: 0.8396226
+      objectReference: {fileID: 0}
+    - target: {fileID: 1282837814706153862, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
+      propertyPath: m_Color.g
+      value: 0.47208977
+      objectReference: {fileID: 0}
+    - target: {fileID: 1282837814706153862, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
+      propertyPath: m_Color.r
+      value: 0.2653524
+      objectReference: {fileID: 0}
     - target: {fileID: 1282837814706153863, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
       propertyPath: _verticalParallax
       value: 0.4
@@ -207,15 +219,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1282837814706153860, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.25
+      value: 1.125
       objectReference: {fileID: 0}
     - target: {fileID: 1282837814706153860, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.25
+      value: 1.125
       objectReference: {fileID: 0}
     - target: {fileID: 1282837814706153860, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 21.75
+      value: 19.47
       objectReference: {fileID: 0}
     - target: {fileID: 1282837814706153860, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
       propertyPath: m_LocalPosition.y
@@ -256,6 +268,18 @@ PrefabInstance:
     - target: {fileID: 1282837814706153861, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
       propertyPath: m_Name
       value: BG Further Forest (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1282837814706153862, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
+      propertyPath: m_Color.b
+      value: 0.8396226
+      objectReference: {fileID: 0}
+    - target: {fileID: 1282837814706153862, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
+      propertyPath: m_Color.g
+      value: 0.47208977
+      objectReference: {fileID: 0}
+    - target: {fileID: 1282837814706153862, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
+      propertyPath: m_Color.r
+      value: 0.2653524
       objectReference: {fileID: 0}
     - target: {fileID: 1282837814706153863, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
       propertyPath: _verticalParallax
@@ -543,15 +567,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1282837814706153860, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.25
+      value: 1.125
       objectReference: {fileID: 0}
     - target: {fileID: 1282837814706153860, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.25
+      value: 1.125
       objectReference: {fileID: 0}
     - target: {fileID: 1282837814706153860, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -21.5
+      value: -19.6
       objectReference: {fileID: 0}
     - target: {fileID: 1282837814706153860, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
       propertyPath: m_LocalPosition.y
@@ -592,6 +616,18 @@ PrefabInstance:
     - target: {fileID: 1282837814706153861, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
       propertyPath: m_Name
       value: BG Further Forest (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1282837814706153862, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
+      propertyPath: m_Color.b
+      value: 0.8396226
+      objectReference: {fileID: 0}
+    - target: {fileID: 1282837814706153862, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
+      propertyPath: m_Color.g
+      value: 0.47208977
+      objectReference: {fileID: 0}
+    - target: {fileID: 1282837814706153862, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
+      propertyPath: m_Color.r
+      value: 0.2653524
       objectReference: {fileID: 0}
     - target: {fileID: 1282837814706153863, guid: 13a7350811a98024fb475f99ad66ad57, type: 3}
       propertyPath: _verticalParallax
