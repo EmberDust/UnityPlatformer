@@ -9,10 +9,10 @@ public class Parallax : MonoBehaviour
     [HideInInspector] public bool originalObject = true;
     
     GameObject _leftPart;
-    GameObject _centerPart;
+    GameObject _centralPart;
     GameObject _rightPart;
 
-    Vector2 _centerBGOrigin;
+    Vector2 _centralPartOrigin;
 
     float _spriteWidth;
     float _partsOffset;
@@ -28,8 +28,8 @@ public class Parallax : MonoBehaviour
             _mainCamera = Camera.main.gameObject;
             _cameraOrigin = _mainCamera.transform.position;
 
-            _centerPart = this.gameObject;
-            _centerBGOrigin = _centerPart.transform.position;
+            _centralPart = this.gameObject;
+            _centralPartOrigin = _centralPart.transform.position;
 
             if (_scrolling)
             {
@@ -69,10 +69,10 @@ public class Parallax : MonoBehaviour
                 }
             }
 
-            Vector2 newBackgroundPosition = new Vector2(_centerBGOrigin.x + (cameraPosition.x - _cameraOrigin.x) * _parallax,
-                                                         _centerBGOrigin.y + (cameraPosition.y - _cameraOrigin.y) * _verticalParallax);
+            Vector2 newBackgroundPosition = new Vector2(_centralPartOrigin.x + (cameraPosition.x - _cameraOrigin.x) * _parallax,
+                                                        _centralPartOrigin.y + (cameraPosition.y - _cameraOrigin.y) * _verticalParallax);
 
-            _centerPart.transform.position = newBackgroundPosition;
+            _centralPart.transform.position = newBackgroundPosition;
 
             if (_scrolling)
             {
@@ -86,23 +86,21 @@ public class Parallax : MonoBehaviour
     {
         GameObject rightPart = _rightPart;
 
-        _rightPart = _centerPart;
-
-        _centerPart = _leftPart;
-        _centerBGOrigin -= new Vector2(_partsOffset, 0.0f);
-
+        _rightPart = _centralPart;
+        _centralPart = _leftPart;
         _leftPart = rightPart;
+
+        _centralPartOrigin -= new Vector2(_partsOffset, 0.0f);
     }
 
     void ScrollRight()
     {
         GameObject leftPart = _leftPart;
 
-        _leftPart = _centerPart;
-
-        _centerPart = _rightPart;
-        _centerBGOrigin += new Vector2(_partsOffset, 0.0f);
-
+        _leftPart = _centralPart;
+        _centralPart = _rightPart;
         _rightPart = leftPart;
+
+        _centralPartOrigin += new Vector2(_partsOffset, 0.0f);
     }
 }
