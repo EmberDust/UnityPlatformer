@@ -7,9 +7,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1114626530, guid: 7dee5a44e79e6fd4c8cf9ddec7136c49, type: 3}
+      propertyPath: _projectilePrefab
+      value: 
+      objectReference: {fileID: 8469327927103433408, guid: 43575348615d1094983a8d0e445d2733, type: 3}
     - target: {fileID: 2539199094575110429, guid: 7dee5a44e79e6fd4c8cf9ddec7136c49, type: 3}
       propertyPath: m_Name
-      value: Projectile Launcher
+      value: Projectile Launcher Variant
       objectReference: {fileID: 0}
     - target: {fileID: 8852811103682864224, guid: 7dee5a44e79e6fd4c8cf9ddec7136c49, type: 3}
       propertyPath: m_RootOrder

@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    [SerializeField] protected float _lifeTime = 3.0f;
-    [SerializeField] protected float _velocity = 1.0f;
-    [SerializeField] protected float _delayAfterCollision = 0.5f;
+    protected float _delayAfterCollision = 0.5f;
+    protected float _lifeTime = 3.0f;
+    protected float _absoluteVelocity = 2.0f;
 
     public Action<Projectile> projectileCollided;
     public Action<Projectile> projectileExpired;
@@ -60,10 +60,12 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    public virtual void Shoot(Vector2 from, Vector2 direction)
+    public virtual void Launch(Vector2 from, Vector2 velocityVector, float lifeTime, float rotationSpeed = 0.0f)
     {
         transform.position = from;
-        _rb.velocity = direction * _velocity;
+        _rb.velocity = velocityVector;
+        _absoluteVelocity = velocityVector.magnitude;
+        _lifeTime = lifeTime;
     }
 
     protected void TriggerProjectileExpiration()

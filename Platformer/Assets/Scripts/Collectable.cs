@@ -66,7 +66,7 @@ public class Collectable : MonoBehaviour
         }
     }
 
-    void OnDisable()
+    void OnSceneEnd()
     {
         GameManager.Instance.checkPointReached -= SaveCurrentState;
         GameManager.Instance.PlayerScript.playerHasBeenEnabled -= ResetToSavedState;
@@ -76,6 +76,8 @@ public class Collectable : MonoBehaviour
     {
         GameManager.Instance.checkPointReached += SaveCurrentState;
         GameManager.Instance.PlayerScript.playerHasBeenEnabled += ResetToSavedState;
+
+        GameManager.Instance.sceneEnded += OnSceneEnd;
     }
 
     void SaveCurrentState()

@@ -98,14 +98,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23d519a3e00077444b655006bad20420, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _projectilePrefab: {fileID: 21725422863017638, guid: 43575348615d1094983a8d0e445d2733, type: 3}
+  _projectilePrefab: {fileID: 8469327927103433408, guid: 43575348615d1094983a8d0e445d2733, type: 3}
   _projectilePoolSize: 1
   _shootFrom: {fileID: 1193815433214569533}
   _delayBetweenShots: 1.75
-  _projectileVelocity: 4
+  _projectileVelocity: 2
+  _projectileLifeTime: 4
+  _isHoming: 0
+  _rotationSpeed: 0.05
   _shootDirection: {x: 0, y: -1}
   _firstShotDelay: 0
   _targetPlayer: 0
+  _maximumShootRange: 20
   _playerAndObstaclesLayers:
     serializedVersion: 2
     m_Bits: 1088

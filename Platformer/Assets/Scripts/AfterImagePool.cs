@@ -15,7 +15,7 @@ public class AfterImagePool : MonoBehaviour
         GameManager.Instance.sceneLoaded += FillThePool;
     }
 
-    public AfterImage GetAfterImageFromPool(Vector2 position, Quaternion rotation)
+    public AfterImage SpawnAfterImage(Vector2 position, Quaternion rotation)
     {
         if (_afterImagePool.Count <= 0)
         {

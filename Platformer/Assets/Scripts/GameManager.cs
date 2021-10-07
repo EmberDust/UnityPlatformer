@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] float _delayAfterFadeOutTriggered  = 0.4f;
 
     [Header("Pause Screen")]
+    [SerializeField] CanvasGroup _pauseCanvasGroup;
     [SerializeField] float _transitionToPauseDuration = 0.2f;
     [SerializeField] float _transitionToPauseTimeStep = 0.02f;
 
@@ -44,10 +45,13 @@ public class GameManager : MonoBehaviour
     string _currentSceneName;
     int    _currentSceneIndex = 0;
 
+    int _collectableScoreOnSceneStart;
     float _currentSceneTimer = 0.0f;
     bool _pauseSceneTimer = false;
 
-    bool _currentlyInPauseTransition;
+    bool _loadingNewScene;
+
+    bool _inPauseTransition;
     ColorAdjustments _pauseColorAdjustment;
 
     Animator _transitionAnimator;
@@ -103,6 +107,11 @@ public class GameManager : MonoBehaviour
             TogglePause();
         }
 
+        if (Input.GetButtonDown("Restart"))
+        {
+            ReloadCurrentScene();
+        }
+
         TimeSpan formattedTime = TimeSpan.FromMilliseconds(_currentSceneTimer * 1000);
 
         GlobalText.Instance.AppendText(formattedTime.ToString("mm':'ss'.'ff"));
@@ -128,9 +137,26 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void ReloadCurrentScene()
+    {
+        if (!_loadingNewScene)
+        {
+            if (IsGamePaused)
+            {
+                UnpauseGame();
+            }
+
+            CurrentCollectablesScore = _collectableScoreOnSceneStart;
+
+            StartCoroutine(LoadScene(SceneManager.GetActiveScene().name));
+        }
+    }
+
     public IEnumerator LoadScene(string sceneName)
     {
         sceneEnded?.Invoke();
+
+        _loadingNewScene = true;
 
         while (!_fadeOutFinished)
         {
@@ -143,6 +169,8 @@ public class GameManager : MonoBehaviour
         {
             yield return null;
         }
+
+        _loadingNewScene = false;
 
         sceneLoaded?.Invoke();
     }
@@ -162,9 +190,11 @@ public class GameManager : MonoBehaviour
             _transitionAnimator.SetTrigger("FadeInTriggered");
         }
 
+        _collectableScoreOnSceneStart = CurrentCollectablesScore;
         _currentSceneTimer = 0.0f;
         _pauseSceneTimer = false;
 
+        PlayerScript.DisablePlayer();
         StartCoroutine(SpawnPlayerAfterDelay(_playerSpawnDelay));
     }
 
@@ -189,7 +219,7 @@ public class GameManager : MonoBehaviour
 
         if (playerSpawn != null)
         {
-            CheckpointPosition = playerSpawn.transform.position;
+            SetNewCheckpoint(playerSpawn);
         }
         else
         {
@@ -271,45 +301,64 @@ public class GameManager : MonoBehaviour
     #region Pause Screen
     void TogglePause()
     {
-        if (!_currentlyInPauseTransition)
+        if (!_inPauseTransition)
         {
             if (IsGamePaused)
             {
-                StartCoroutine(PauseTransition(1.0f, 5.0f, false, false));
+                UnpauseGame();
             }
             else
             {
-                StartCoroutine(PauseTransition(0.0f, -75.0f, true, true));
+                PauseGame();
             }
         }
     }
 
-    IEnumerator PauseTransition(float finalTimeScale, float finalSaturation, bool gamePausedAfter, bool volumeEnabledAfter)
+    void UnpauseGame()
     {
-        _currentlyInPauseTransition = true;
+        StartCoroutine(TriggerPauseTransition(1.0f, 5.0f, false));
+    }
+
+    void PauseGame()
+    {
+        StartCoroutine(TriggerPauseTransition(0.0f, -75.0f, true));
+    }
+
+    IEnumerator TriggerPauseTransition(float finalTimeScale, float finalSaturation, bool gamePausedAfter)
+    {
+        _inPauseTransition = true;
 
         _pauseColorAdjustment.active = true;
         float startingSaturation = _pauseColorAdjustment.saturation.value;
 
         float startingTimeScale = Time.timeScale;
 
+        float startingCanvasAlpha = _pauseCanvasGroup.alpha;
+        float finalCanvasAlpha = gamePausedAfter ? 1.0f : 0.0f;
+
         float totalTimeSteps = _transitionToPauseDuration / _transitionToPauseTimeStep;
 
         for (int currentTimeStep = 1; currentTimeStep < totalTimeSteps; currentTimeStep++)
         {
-            _pauseColorAdjustment.saturation.value = Mathf.Lerp(startingSaturation, finalSaturation, currentTimeStep / totalTimeSteps);
-            Time.timeScale = Mathf.Lerp(startingTimeScale, finalTimeScale, currentTimeStep / totalTimeSteps);
+            float transitionProgress = currentTimeStep / totalTimeSteps;
 
-            yield return new WaitForSeconds(_transitionToPauseTimeStep);
+            _pauseColorAdjustment.saturation.value = Mathf.Lerp(startingSaturation, finalSaturation, transitionProgress);
+            Time.timeScale = Mathf.Lerp(startingTimeScale, finalTimeScale, transitionProgress);
+            _pauseCanvasGroup.alpha = Mathf.Lerp(startingCanvasAlpha, finalCanvasAlpha, transitionProgress);
+
+            yield return new WaitForSecondsRealtime(_transitionToPauseTimeStep);
         }
 
         Time.timeScale = finalTimeScale;
         _pauseColorAdjustment.saturation.value = finalSaturation;
+        _pauseCanvasGroup.alpha = finalCanvasAlpha;
+
+        _pauseColorAdjustment.active = gamePausedAfter;
+        _pauseCanvasGroup.interactable = gamePausedAfter;
 
         IsGamePaused = gamePausedAfter;
-        _pauseColorAdjustment.active = volumeEnabledAfter;
 
-        _currentlyInPauseTransition = false;
+        _inPauseTransition = false;
     }
     #endregion
 }

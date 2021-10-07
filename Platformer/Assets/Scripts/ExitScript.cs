@@ -17,8 +17,6 @@ public class ExitScript : MonoBehaviour
     {
         if (collision.gameObject == GameManager.Instance.PlayerObject && !_exitWasTriggered)
         {
-            GameManager.Instance.LoadNextScene();
-
             _exitWasTriggered = true;
             _doorAnimator.SetTrigger("ExitWasTriggered");
 
@@ -26,6 +24,8 @@ public class ExitScript : MonoBehaviour
             {
                 _particlesOnDisappear.Play();
             }
+
+            GameManager.Instance.LoadNextScene();
         }
     }
 }

@@ -892,6 +892,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 368743488}
     m_Modifications:
+    - target: {fileID: 1054282443683069412, guid: 47550c94d63e1fe4f919576e67dd609d, type: 3}
+      propertyPath: _rotationSpeed
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1054282443683069412, guid: 47550c94d63e1fe4f919576e67dd609d, type: 3}
+      propertyPath: _delayBetweenShots
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1054282443683069412, guid: 47550c94d63e1fe4f919576e67dd609d, type: 3}
+      propertyPath: _projectileLifeTime
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1054282443683069412, guid: 47550c94d63e1fe4f919576e67dd609d, type: 3}
+      propertyPath: _projectileVelocity
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3286673713619254555, guid: 47550c94d63e1fe4f919576e67dd609d, type: 3}
       propertyPath: m_Name
       value: Homing Projectile Launcher (1)
@@ -1220,7 +1236,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.118, y: 0.08700052, z: -10}
+  m_LocalPosition: {x: 2.111, y: 0.09200053, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -4466,6 +4482,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 368743488}
     m_Modifications:
+    - target: {fileID: 1054282443683069412, guid: 47550c94d63e1fe4f919576e67dd609d, type: 3}
+      propertyPath: _rotationSpeed
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1054282443683069412, guid: 47550c94d63e1fe4f919576e67dd609d, type: 3}
+      propertyPath: _delayBetweenShots
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1054282443683069412, guid: 47550c94d63e1fe4f919576e67dd609d, type: 3}
+      propertyPath: _projectileLifeTime
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1054282443683069412, guid: 47550c94d63e1fe4f919576e67dd609d, type: 3}
+      propertyPath: _projectileVelocity
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3286673713619254555, guid: 47550c94d63e1fe4f919576e67dd609d, type: 3}
       propertyPath: m_Name
       value: Homing Projectile Launcher (2)
@@ -5125,11 +5157,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3577910337559658998, guid: c15f001399faef244ac10c73a2ca9c33, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.118
+      value: 2.111
       objectReference: {fileID: 0}
     - target: {fileID: 3577910337559658998, guid: c15f001399faef244ac10c73a2ca9c33, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.238
+      value: -0.233
       objectReference: {fileID: 0}
     - target: {fileID: 3577910337559658998, guid: c15f001399faef244ac10c73a2ca9c33, type: 3}
       propertyPath: m_LocalPosition.z
@@ -62391,6 +62423,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 368743488}
     m_Modifications:
+    - target: {fileID: 1054282443683069412, guid: 47550c94d63e1fe4f919576e67dd609d, type: 3}
+      propertyPath: _rotationSpeed
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1054282443683069412, guid: 47550c94d63e1fe4f919576e67dd609d, type: 3}
+      propertyPath: _delayBetweenShots
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1054282443683069412, guid: 47550c94d63e1fe4f919576e67dd609d, type: 3}
+      propertyPath: _projectileLifeTime
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1054282443683069412, guid: 47550c94d63e1fe4f919576e67dd609d, type: 3}
+      propertyPath: _projectileVelocity
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3286673713619254555, guid: 47550c94d63e1fe4f919576e67dd609d, type: 3}
       propertyPath: m_Name
       value: Homing Projectile Launcher
@@ -119672,11 +119720,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5719072624826406024, guid: bf507d51e1419e44d91dccc171bd4609, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.118
+      value: 2.111
       objectReference: {fileID: 0}
     - target: {fileID: 5719072624826406024, guid: bf507d51e1419e44d91dccc171bd4609, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.08700052
+      value: 0.09200053
       objectReference: {fileID: 0}
     - target: {fileID: 5719072624826406024, guid: bf507d51e1419e44d91dccc171bd4609, type: 3}
       propertyPath: m_LocalPosition.z
@@ -119745,11 +119793,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7945967496813168227, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2
+      value: -0.04
       objectReference: {fileID: 0}
     - target: {fileID: 7945967496813168227, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.233
+      value: 9.8
       objectReference: {fileID: 0}
     - target: {fileID: 7945967496813168227, guid: 0b41e1f2466603d428cea21bc07f5fa1, type: 3}
       propertyPath: m_LocalPosition.z

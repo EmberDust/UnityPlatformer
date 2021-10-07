@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 6979944292689187942}
   - component: {fileID: 1304563564117858996}
   - component: {fileID: 2977757412144248468}
-  - component: {fileID: 21725422863017638}
   m_Layer: 9
   m_Name: Spike Projectile Base
   m_TagString: Untagged
@@ -142,18 +141,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &21725422863017638
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6511677060010132010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4579716dbc0e73b408a7162a8fb1e369, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _lifeTime: 5
-  _velocity: 1
-  _delayAfterCollision: 0.5

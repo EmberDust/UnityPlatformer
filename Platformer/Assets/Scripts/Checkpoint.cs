@@ -28,7 +28,7 @@ public class Checkpoint : MonoBehaviour
         IsActive = false;
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+    virtual protected void OnTriggerEnter2D(Collider2D collision)
     {
         if (!_isActive && collision.gameObject == GameManager.Instance.PlayerObject)
         {

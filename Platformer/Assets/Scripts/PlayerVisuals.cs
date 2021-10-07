@@ -120,7 +120,7 @@ public class PlayerVisuals : MonoBehaviour
             {
                 if (_timeLastImageCreated + _secondsBetweenImages < Time.time)
                 {
-                    AfterImage afterImage = _afterImagePool.GetAfterImageFromPool(transform.position, transform.rotation);
+                    AfterImage afterImage = _afterImagePool.SpawnAfterImage(transform.position, transform.rotation);
                     afterImage.transform.localScale = transform.localScale;
 
                     afterImage.Sprite.sprite = _sprite.sprite;

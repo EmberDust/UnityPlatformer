@@ -178,6 +178,8 @@ public class Player : MonoBehaviour
             _rb.velocity = Vector2.zero;
             _rb.isKinematic = true;
 
+            _currentCurve = null;
+
             foreach(var collider in _colliders)
             {
                 collider.enabled = false;

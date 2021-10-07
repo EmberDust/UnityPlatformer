@@ -6,13 +6,20 @@ using UnityEngine;
 public class ProjectileLauncher : MonoBehaviour
 {
     [Header("Projectile pool")]
-    [SerializeField] Projectile _projectilePrefab;
+    [SerializeField] Collider2D _projectilePrefab;
     [SerializeField] int _projectilePoolSize = 10;
 
-    [Header("Projectile launcher")]
+    [Header("Launcher")]
     [SerializeField] Transform _shootFrom = null;
     [SerializeField] float _delayBetweenShots = 1f;
+
+    [Header("Projectile")]
     [SerializeField] float _projectileVelocity = 0.2f;
+    [SerializeField] float _projectileLifeTime = 3.0f;
+
+    [Header("Homing Projectile")]
+    [SerializeField] bool _isHoming = false;
+    [SerializeField] float _rotationSpeed = 0.05f;
 
     [Header("Without player targeting")]
     [SerializeField] Vector2 _shootDirection = Vector2.up;
@@ -54,17 +61,28 @@ public class ProjectileLauncher : MonoBehaviour
 
     void CreateProjectileInPool()
     {
-        Projectile newProjectileScript = Instantiate<Projectile>(_projectilePrefab);
-        GameObject newProjectile = newProjectileScript.gameObject;
+        var newProjectile = Instantiate(_projectilePrefab);
+
+        GameObject newProjectileObject = newProjectile.gameObject;
+        Projectile newProjectileScript;
+
+        if (_isHoming)
+        {
+            newProjectileScript = newProjectileObject.AddComponent<HomingProjectile>();
+        }
+        else
+        {
+            newProjectileScript = newProjectileObject.AddComponent<Projectile>();
+        }
 
         // Subscribe to projectile events
         newProjectileScript.projectileCollided += ReturnProjectileToPool;
         newProjectileScript.projectileExpired += ReturnProjectileToPool;
 
-        // Put them under the current object to avoid mess in the hierarchy
-        newProjectile.transform.SetParent(transform);
+        // Avoid mess in the hierarchy
+        newProjectileObject.transform.SetParent(transform);
 
-        newProjectile.SetActive(false);
+        newProjectileObject.SetActive(false);
 
         _projectilePool.Enqueue(newProjectileScript);
     }
@@ -88,7 +106,7 @@ public class ProjectileLauncher : MonoBehaviour
                 {
                     if (raycastTowardsPlayer.collider.gameObject == GameManager.Instance.PlayerObject)
                     {
-                        ShootProjectile(_shootFromPosition, vectorToPlayer * _projectileVelocity);
+                        ShootProjectile(vectorToPlayer * _projectileVelocity);
                         _timeLastShot = Time.time;
                     }
                 }
@@ -96,12 +114,12 @@ public class ProjectileLauncher : MonoBehaviour
         }
         else
         {
-            ShootProjectile(_shootFromPosition, _shootDirection * _projectileVelocity);
+            ShootProjectile(_shootDirection * _projectileVelocity);
             _timeLastShot = Time.time;
         }
     }
 
-    void ShootProjectile(Vector2 spawnPosition, Vector2 velocity)
+    void ShootProjectile(Vector2 velocityVector)
     {
         if (_projectilePool.Count <= 0)
         {
@@ -111,7 +129,7 @@ public class ProjectileLauncher : MonoBehaviour
         Projectile spawnedProjectileScript = _projectilePool.Dequeue();
         spawnedProjectileScript.gameObject.SetActive(true);
 
-        spawnedProjectileScript.Shoot(spawnPosition, velocity);
+        spawnedProjectileScript.Launch(_shootFromPosition, velocityVector, _projectileLifeTime, _rotationSpeed);
     }
 
     void ReturnProjectileToPool(Projectile projectileScript)
@@ -121,10 +139,7 @@ public class ProjectileLauncher : MonoBehaviour
 
     IEnumerator ReturnToPoolWhenReady(Projectile projectileScript)
     {
-        while (!projectileScript.ReadyToBeReturned)
-        {
-            yield return null;
-        }
+        yield return new WaitUntil(() => projectileScript.ReadyToBeReturned);
 
         projectileScript.gameObject.SetActive(false);
         _projectilePool.Enqueue(projectileScript);

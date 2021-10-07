@@ -4,16 +4,16 @@ using UnityEngine;
 
 public class HomingProjectile : Projectile
 {
-    [Header("Homing")]
-    [SerializeField] float _rotationSpeed = 0.5f;
+    float _rotationSpeed = 2.0f;
 
     Vector2 _currentMovementDirection;
 
-    public override void Shoot(Vector2 from, Vector2 direction)
+    public override void Launch(Vector2 from, Vector2 direction, float lifeTime, float rotationSpeed = 0.0f)
     {
-        base.Shoot(from, direction);
+        base.Launch(from, direction, lifeTime);
 
         _currentMovementDirection = direction;
+        _rotationSpeed = rotationSpeed;
     }
 
     protected override void ProjectileLogicUpdate()
@@ -39,7 +39,7 @@ public class HomingProjectile : Projectile
                     _currentMovementDirection = Quaternion.Euler(0, 0, rotationAmount) * _currentMovementDirection;
                 }
 
-                _rb.velocity = _velocity * _currentMovementDirection;
+                _rb.velocity = _absoluteVelocity * _currentMovementDirection;
             }
         }
     }
