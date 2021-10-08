@@ -20,16 +20,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] float _delayBeforeFadeOut = 0.4f;
     [SerializeField] float _delayAfterFadeOutTriggered  = 0.4f;
 
-    [Header("Pause Screen")]
-    [SerializeField] CanvasGroup _pauseCanvasGroup;
-    [SerializeField] float _transitionToPauseDuration = 0.2f;
-    [SerializeField] float _transitionToPauseTimeStep = 0.02f;
-
     [Header("Levels")]
     [SerializeField] bool _loopLevels = false;
     [SerializeField] List<string> _scenesLoadOrder;
 
-    public bool IsGamePaused { get; private set; }
+    public bool IsGamePaused { get => _menuManager.ActiveMenu != null; }
     public int CurrentCollectablesScore { get; set; }
     public Vector2 CheckpointPosition  { get; set; }
     public Vector2 ExitPosition        { get; set; }
@@ -51,8 +46,7 @@ public class GameManager : MonoBehaviour
 
     bool _loadingNewScene;
 
-    bool _inPauseTransition;
-    ColorAdjustments _pauseColorAdjustment;
+    MenuManager _menuManager;
 
     Animator _transitionAnimator;
 
@@ -76,8 +70,7 @@ public class GameManager : MonoBehaviour
     {
         _transitionAnimator = GetComponentInChildren<Animator>();
 
-        Volume pauseVolume = GetComponentInChildren<Volume>();
-        pauseVolume.profile.TryGet(out _pauseColorAdjustment);
+        _menuManager = GetComponent<MenuManager>();
 
         FindPlayer();
 
@@ -102,14 +95,22 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Pause"))
+        if (Input.GetButtonDown("Free Button"))
         {
-            TogglePause();
+            _menuManager.ToggleCompletionMenu();
         }
 
-        if (Input.GetButtonDown("Restart"))
+        if (!_menuManager.InCompletionMenu)
         {
-            ReloadCurrentScene();
+            if (Input.GetButtonDown("Pause"))
+            {
+                _menuManager.TogglePauseMenu();
+            }
+
+            if (Input.GetButtonDown("Restart"))
+            {
+                ReloadCurrentScene();
+            }
         }
 
         TimeSpan formattedTime = TimeSpan.FromMilliseconds(_currentSceneTimer * 1000);
@@ -119,6 +120,31 @@ public class GameManager : MonoBehaviour
     }
 
     #region Scene Management
+    public void ReloadCurrentScene()
+    {
+        if (!_loadingNewScene)
+        {
+            if (IsGamePaused)
+            {
+                _menuManager.TogglePauseMenu();
+            }
+
+            CurrentCollectablesScore = _collectableScoreOnSceneStart;
+
+            StartCoroutine(LoadScene(SceneManager.GetActiveScene().name));
+        }
+    }
+
+    public void FinishTheScene()
+    {
+        // Save scene result
+        // Completion screen
+        // Actually here we spawn gui
+        
+
+        LoadNextScene();
+    }
+
     public void LoadNextScene()
     {
         int nextSceneIndex = _currentSceneIndex + 1;
@@ -131,24 +157,9 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine(LoadScene(_scenesLoadOrder[0]));
         }
-        else 
+        else
         {
             Debug.Log("No more scenes in load order");
-        }
-    }
-
-    public void ReloadCurrentScene()
-    {
-        if (!_loadingNewScene)
-        {
-            if (IsGamePaused)
-            {
-                UnpauseGame();
-            }
-
-            CurrentCollectablesScore = _collectableScoreOnSceneStart;
-
-            StartCoroutine(LoadScene(SceneManager.GetActiveScene().name));
         }
     }
 
@@ -295,70 +306,6 @@ public class GameManager : MonoBehaviour
 
         PlayerObject.transform.position = CheckpointPosition;
         PlayerScript.EnablePlayer();
-    }
-    #endregion
-
-    #region Pause Screen
-    void TogglePause()
-    {
-        if (!_inPauseTransition)
-        {
-            if (IsGamePaused)
-            {
-                UnpauseGame();
-            }
-            else
-            {
-                PauseGame();
-            }
-        }
-    }
-
-    void UnpauseGame()
-    {
-        StartCoroutine(TriggerPauseTransition(1.0f, 5.0f, false));
-    }
-
-    void PauseGame()
-    {
-        StartCoroutine(TriggerPauseTransition(0.0f, -75.0f, true));
-    }
-
-    IEnumerator TriggerPauseTransition(float finalTimeScale, float finalSaturation, bool gamePausedAfter)
-    {
-        _inPauseTransition = true;
-
-        _pauseColorAdjustment.active = true;
-        float startingSaturation = _pauseColorAdjustment.saturation.value;
-
-        float startingTimeScale = Time.timeScale;
-
-        float startingCanvasAlpha = _pauseCanvasGroup.alpha;
-        float finalCanvasAlpha = gamePausedAfter ? 1.0f : 0.0f;
-
-        float totalTimeSteps = _transitionToPauseDuration / _transitionToPauseTimeStep;
-
-        for (int currentTimeStep = 1; currentTimeStep < totalTimeSteps; currentTimeStep++)
-        {
-            float transitionProgress = currentTimeStep / totalTimeSteps;
-
-            _pauseColorAdjustment.saturation.value = Mathf.Lerp(startingSaturation, finalSaturation, transitionProgress);
-            Time.timeScale = Mathf.Lerp(startingTimeScale, finalTimeScale, transitionProgress);
-            _pauseCanvasGroup.alpha = Mathf.Lerp(startingCanvasAlpha, finalCanvasAlpha, transitionProgress);
-
-            yield return new WaitForSecondsRealtime(_transitionToPauseTimeStep);
-        }
-
-        Time.timeScale = finalTimeScale;
-        _pauseColorAdjustment.saturation.value = finalSaturation;
-        _pauseCanvasGroup.alpha = finalCanvasAlpha;
-
-        _pauseColorAdjustment.active = gamePausedAfter;
-        _pauseCanvasGroup.interactable = gamePausedAfter;
-
-        IsGamePaused = gamePausedAfter;
-
-        _inPauseTransition = false;
     }
     #endregion
 }

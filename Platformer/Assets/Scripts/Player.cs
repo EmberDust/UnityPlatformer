@@ -10,7 +10,6 @@ public class Player : MonoBehaviour
     static Player Instance { get; set; }
 
     #region Serialized Fields
-    [Space]
     [Header("Horizontal Movement Values")]
     [SerializeField] float _baseDeceleration      = 1.0f;
     [SerializeField] float _baseAcceleration      = 1.5f;
