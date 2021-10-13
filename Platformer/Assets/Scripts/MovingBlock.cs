@@ -10,6 +10,7 @@ public class MovingBlock : MonoBehaviour
     [SerializeField] float _speed = 1f;
     [SerializeField] float _pauseOnRoutePoints = 0f;
     [SerializeField] float _pauseOnRouteEnd = 0f;
+    [SerializeField] bool _resetOnPlayerRespawn = false;
 
     LineRenderer _line = null;
     RoutePoint[] _routePoints;
@@ -21,8 +22,12 @@ public class MovingBlock : MonoBehaviour
     bool _stoppedOnRouteEnd = false;
     bool _stoppedOnRoutePoint = false;
 
+    Vector2 _startingPosition;
+
     void Start()
     {
+        _startingPosition = _blockBody.transform.position;
+
         // Make a route out of all children objects with RoutePoint component on them
         _routePointsPositions = new List<Vector3>();
 
@@ -38,6 +43,8 @@ public class MovingBlock : MonoBehaviour
         {
             DrawLineBetweenPoints();
         }
+
+        StartCoroutine(Utils.DoAfterAFrame(SetupMovingBlock));
     }
 
     void FixedUpdate()
@@ -105,5 +112,37 @@ public class MovingBlock : MonoBehaviour
             Vector3 movementDirection = (_routePointsPositions[_destinationPointIndex] - _blockBody.transform.position).normalized;
             _blockBody.MovePosition(_blockBody.transform.position + movementDirection * _speed);
         }
+    }
+
+    void SetupMovingBlock()
+    {
+        if (_resetOnPlayerRespawn)
+        {
+            GameManager.Instance.PlayerScript.playerHasBeenEnabled += ResetBlock;
+        }
+
+        GameManager.Instance.sceneEnded += OnSceneEnd;
+    }
+    
+    void OnSceneEnd()
+    {
+        if (_resetOnPlayerRespawn)
+        {
+            GameManager.Instance.PlayerScript.playerHasBeenEnabled -= ResetBlock;
+        }
+
+        GameManager.Instance.sceneEnded -= OnSceneEnd;
+    }
+
+    void ResetBlock()
+    {
+        _blockBody.transform.position = _startingPosition;
+        _destinationPointIndex = 0;
+        _traverseDirection = 1;
+
+        _stoppedOnRouteEnd = false;
+        _stoppedOnRoutePoint = false;
+
+        StopAllCoroutines();
     }
 }

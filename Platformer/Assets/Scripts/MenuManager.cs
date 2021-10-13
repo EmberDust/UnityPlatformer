@@ -4,51 +4,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using TMPro;
 
 public class MenuManager : MonoBehaviour
 {
-    public class Menu
-    {
-        public Coroutine activeTransition;
-        public CanvasGroup canvasGroup;
-        public bool active;
-
-        public Menu(CanvasGroup group)
-        {
-            canvasGroup = group;
-            active = false;
-        }
-    }
-
-    [SerializeField] CanvasGroup _pauseCanvasGroup;
-    [SerializeField] CanvasGroup _sceneCompletionCanvasGroup;
+    [SerializeField] Menu _pauseMenu;
+    [SerializeField] Menu _sceneCompletionMenu;
     [Header("Transition")]
     [SerializeField] float _transitionDuration = 0.1f;
     [SerializeField] float _transitionTimeStep = 0.01f;
     [SerializeField] float _saturationInPause = -50f;
 
-    Menu _pauseMenu;
-    Menu _sceneCompletionMenu;
-
     public bool InPauseMenu { get => _pauseMenu.active; }
     public bool InCompletionMenu { get => _sceneCompletionMenu.active; }
     public bool InMenuTransition { get => _activeTransition != null; }
+    public TextMeshProUGUI CompletionText { get => _completionText; }
     public Menu ActiveMenu { get; private set; }
 
     ColorAdjustments _colorOverride;
 
     Coroutine _activeTransition;
+    TextMeshProUGUI _completionText;
 
     void Start()
     {
         Volume colorOverrideVolume = GetComponentInChildren<Volume>();
         colorOverrideVolume.profile.TryGet(out _colorOverride);
 
+        _completionText = _sceneCompletionMenu.menuText;
+
         ActiveMenu = null;
-
-        _pauseMenu = new Menu(_pauseCanvasGroup);
-
-        _sceneCompletionMenu = new Menu(_sceneCompletionCanvasGroup);
     }
 
     public void ToggleCompletionMenu()
@@ -77,6 +62,15 @@ public class MenuManager : MonoBehaviour
 
             EnableMenu(menu);
             _activeTransition = StartCoroutine(TransitionToPause(0.0f, _saturationInPause));
+        }
+    }
+
+    public void TransitionOutOfActiveMenu()
+    {
+        if (ActiveMenu != null && ActiveMenu.active)
+        {
+            DisableMenu(ActiveMenu);
+            _activeTransition = StartCoroutine(TransitionToPause(1.0f, 0.0f));
         }
     }
 

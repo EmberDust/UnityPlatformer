@@ -4905,7 +4905,7 @@ Transform:
   - {fileID: 1403143521}
   - {fileID: 215703992}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1494869442 stripped
 Transform:
@@ -117600,7 +117600,7 @@ Tilemap:
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
-  m_Color: {r: 0.42941067, g: 0.40330186, b: 0.5377358, a: 1}
+  m_Color: {r: 0.5157911, g: 0.46635816, b: 0.754717, a: 1}
   m_Origin: {x: -149, y: -31, z: 0}
   m_Size: {x: 267, y: 113, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
@@ -118133,7 +118133,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3980490886677366922, guid: c628ecdc06647194eb2f40cacad35c7f, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3980490886677366922, guid: c628ecdc06647194eb2f40cacad35c7f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -119340,7 +119340,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4525967679956914826, guid: bfe72a50aa80fb341aaa9cb3c3ac0f5a, type: 3}
       propertyPath: m_RootOrder
-      value: 15
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 4525967679956914826, guid: bfe72a50aa80fb341aaa9cb3c3ac0f5a, type: 3}
       propertyPath: m_AnchorMax.x
@@ -119548,7 +119548,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5719072624826406024, guid: bf507d51e1419e44d91dccc171bd4609, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5719072624826406024, guid: bf507d51e1419e44d91dccc171bd4609, type: 3}
       propertyPath: m_LocalPosition.x

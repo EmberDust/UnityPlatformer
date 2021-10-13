@@ -25,7 +25,7 @@ public class ExitScript : MonoBehaviour
                 _particlesOnDisappear.Play();
             }
 
-            GameManager.Instance.FinishTheScene();
+            GameManager.Instance.CompleteTheScene();
         }
     }
 }

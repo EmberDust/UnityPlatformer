@@ -22,8 +22,8 @@ public class ButtonScript : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         _parentCanvasGroup = GetComponentInParent<CanvasGroup>();
 
         _fontSizeStarting = _buttonText.fontSize;
-        _fontSizeOnHover = _fontSizeStarting * 1.15f;
-        _fontSizeOnClick = _fontSizeStarting * 1.05f;
+        _fontSizeOnHover = _fontSizeStarting * 1.10f;
+        _fontSizeOnClick = _fontSizeStarting * 1.00f;
     }
 
     public void OnButtonClick()

@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -43,6 +44,7 @@ public class GameManager : MonoBehaviour
     int _collectableScoreOnSceneStart;
     float _currentSceneTimer = 0.0f;
     bool _pauseSceneTimer = false;
+    TimeSpan _formattedTime;
 
     bool _loadingNewScene;
 
@@ -95,9 +97,10 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        // Debug
         if (Input.GetButtonDown("Free Button"))
         {
-            _menuManager.ToggleCompletionMenu();
+            CompleteTheScene();
         }
 
         if (!_menuManager.InCompletionMenu)
@@ -113,9 +116,9 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        TimeSpan formattedTime = TimeSpan.FromMilliseconds(_currentSceneTimer * 1000);
+        _formattedTime = TimeSpan.FromMilliseconds(_currentSceneTimer * 1000);
 
-        GlobalText.Instance.AppendText(formattedTime.ToString("mm':'ss'.'ff"));
+        GlobalText.Instance.AppendText(_formattedTime.ToString("mm':'ss'.'ff"));
         GlobalText.Instance.AppendText("Current Score: " + CurrentCollectablesScore.ToString());
     }
 
@@ -124,25 +127,20 @@ public class GameManager : MonoBehaviour
     {
         if (!_loadingNewScene)
         {
-            if (IsGamePaused)
-            {
-                _menuManager.TogglePauseMenu();
-            }
-
             CurrentCollectablesScore = _collectableScoreOnSceneStart;
 
             StartCoroutine(LoadScene(SceneManager.GetActiveScene().name));
         }
     }
 
-    public void FinishTheScene()
+    public void CompleteTheScene()
     {
-        // Save scene result
-        // Completion screen
-        // Actually here we spawn gui
-        
-
-        LoadNextScene();
+        // TODO: Save scene result
+        if (!_menuManager.InCompletionMenu)
+        {
+            _menuManager.ToggleCompletionMenu();
+            _menuManager.CompletionText.text = $" Stage Completed! \n Timer: {_formattedTime.ToString("mm':'ss'.'ff")} \n Score: {CurrentCollectablesScore}";
+        }
     }
 
     public void LoadNextScene()
@@ -165,6 +163,8 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator LoadScene(string sceneName)
     {
+        _menuManager.TransitionOutOfActiveMenu();
+
         sceneEnded?.Invoke();
 
         _loadingNewScene = true;
