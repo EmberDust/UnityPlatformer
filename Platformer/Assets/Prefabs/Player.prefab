@@ -29216,7 +29216,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7214b99a2c64df14d8ad7b366cc2a929, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timeScale: 1
   _baseDeceleration: 1
   _baseAcceleration: 1.5
   _thresholdVelocity: 3
@@ -29369,7 +29368,7 @@ MonoBehaviour:
   _jumpingParticles: {fileID: 751759892}
   _multijumpParticles: {fileID: 6556809107142993357}
   _walljumpParticles: {fileID: 595268745}
-  _wallSlideParticles: {fileID: 0}
+  _wallSlideParticles: {fileID: 1990032881}
   _deathParticles: {fileID: 1478986520}
   _afterImagePool: {fileID: 1690828466}
   _afterImageVelocity: 4.5
