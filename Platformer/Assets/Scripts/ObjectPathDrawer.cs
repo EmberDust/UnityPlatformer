@@ -11,6 +11,12 @@ public class ObjectPathDrawer : MonoBehaviour
     [SerializeField] bool _drawPath = false;
     [SerializeField] bool _discardLine = false;
 
+    void Start()
+    {
+        _drawPath = false;
+        _discardLine = true;
+    }
+
     void Update()
     {
         if (_drawPath)

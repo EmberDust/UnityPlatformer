@@ -29220,8 +29220,8 @@ MonoBehaviour:
   _baseAcceleration: 1.5
   _thresholdVelocity: 3
   _thresholdDeceleration: 0.505
-  _slideDeceleration: 0.15
-  _slideAcceleration: 0.075
+  _slideDeceleration: 0.08
+  _slideAcceleration: 0
   _slideThresholdDeceleration: 0
   _additionalJumps: 1
   _jumpSpeed: 3.8
@@ -29389,8 +29389,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerPathFile: {fileID: 11400000, guid: 6702e1d331adc174795fcad285a2c6a7, type: 2}
-  _framesBetweenSaves: 3
-  _pauseTracker: 1
+  _framesBetweenSaves: 5
+  _pauseTracker: 0
   _overwriteCurrentPath: 1
 --- !u!114 &1690828466
 MonoBehaviour:
